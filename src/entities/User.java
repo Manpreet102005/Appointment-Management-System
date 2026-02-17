@@ -3,7 +3,7 @@ package entities;
 public class User {
 
     public enum Role{
-        PATIENT, ADMIN,DOCTOR
+        PATIENT, ADMIN
     }
     private final int id;
     private final String fullName;
@@ -16,5 +16,4 @@ public class User {
     public String getFullName() {return fullName;}
     public int getId(){return id;}
     public Role getRole(){return role;}
-
 }
