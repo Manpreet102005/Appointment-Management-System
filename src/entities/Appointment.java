@@ -38,4 +38,12 @@ public class Appointment {
     public void setStatus(Status status){
         this.status=status;
     }
+
+    public String acknowledgement(){
+        String ack=String.format(
+                "Appointment{id=%d, patient='%s', doctor='%s', dateTime=%s, status=%s}",
+                id, patient, doctor, dateTime, status
+        );
+        return ack;
+    }
 }
