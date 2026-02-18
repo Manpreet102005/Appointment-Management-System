@@ -6,28 +6,28 @@ public class Appointment {
     public enum Status{
         BOOKED, CANCELLED;
     }
-    private final int id;
-    private final String patient;
-    private final String doctor;
+    private final int doctorId;
+    private final int patientId;
+    private final String patientName;
     private final LocalDateTime dateTime;
     private Status status;
 
-    public Appointment(int id,String patient,String doctor,LocalDateTime dateTime,Status status){
-        this.id=id;
-        this.patient=patient;
-        this.doctor=doctor;
+    public Appointment(int doctorId,int patientId,String patientName,LocalDateTime dateTime){
+        this.doctorId=doctorId;
+        this.patientId=patientId;
+        this.patientName=patientName;
         this.dateTime=dateTime;
-        this.status=status;
+        this.status=Status.CANCELLED; // assuming cancelled by default
     }
 
-    public int getId(){
-        return id;
+    public int getPatientId(){
+        return patientId;
     }
-    public String getPatient(){
-        return patient;
+    public String getPatientName(){
+        return patientName;
     }
-    public String getDoctor(){
-        return doctor;
+    public int getDoctorId(){
+        return doctorId;
     }
     public LocalDateTime getDateTime(){
         return dateTime;
@@ -39,11 +39,4 @@ public class Appointment {
         this.status=status;
     }
 
-    public String acknowledgement(){
-        String ack=String.format(
-                "Appointment{id=%d, patient='%s', doctor='%s', dateTime=%s, status=%s}",
-                id, patient, doctor, dateTime, status
-        );
-        return ack;
-    }
 }
