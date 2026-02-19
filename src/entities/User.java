@@ -1,19 +1,15 @@
 package entities;
 
-public class User {
+public class User extends Person {
 
     public enum Role{
         PATIENT, ADMIN
     }
-    private final int id;
-    private final String fullName;
     private final Role role;
     public User(int id, String fullName, Role role){
-        this.id=id;
-        this.fullName=fullName;
+        super(id,fullName);
         this.role=role;
     }
-    public String getFullName() {return fullName;}
-    public int getId(){return id;}
+
     public Role getRole(){return role;}
 }
