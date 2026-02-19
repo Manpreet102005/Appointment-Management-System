@@ -3,7 +3,6 @@ package repositries.impl;
 import entities.Doctor;
 import repositries.DoctorRepository;
 
-import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;

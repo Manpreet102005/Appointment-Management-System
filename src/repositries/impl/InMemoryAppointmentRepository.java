@@ -1,12 +1,15 @@
 package repositries.impl;
 
 import entities.Appointment;
+import repositries.AppointmentRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class InMemoryAppointmentRepository {
+public class InMemoryAppointmentRepository implements AppointmentRepository {
     ConcurrentHashMap<Integer, TreeMap<LocalDateTime, Appointment>> appointments=new ConcurrentHashMap<>();
 
     public Appointment addAppointment(int doctorId,LocalDateTime dateTime,int patientId,String patient){
@@ -33,5 +36,13 @@ public class InMemoryAppointmentRepository {
             return true;
         }
         return false;
+    }
+    public List<Appointment> getAllAppointments(){
+        List<Appointment> allAppointments=new ArrayList<>();
+        for(int key: appointments.keySet()){
+            TreeMap<LocalDateTime,Appointment> schedules=appointments.get(key);
+            allAppointments.addAll(schedules.values());
+        }
+        return allAppointments;
     }
 }
