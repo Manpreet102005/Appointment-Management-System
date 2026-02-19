@@ -10,10 +10,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class InMemoryDoctorRepository implements DoctorRepository {
     ConcurrentHashMap<Integer, Doctor> doctors=new ConcurrentHashMap<>();
 
-    public void addDoctor(Doctor doctor){
+    public synchronized void addDoctor(Doctor doctor){
         doctors.put(doctor.getId(),doctor);
     }
-    public void removeDoctor(int id){
+    public synchronized void removeDoctor(int id){
         doctors.remove(id);
     }
     public Doctor getDoctor(int id){
