@@ -13,14 +13,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class InMemoryAppointmentRepository implements AppointmentRepository {
     ConcurrentHashMap<Integer, TreeMap<LocalDateTime, Appointment>> appointments=new ConcurrentHashMap<>();
 
-    public void addAppointment(int doctorId,LocalDateTime dateTime,int patientId,String patient){
-        appointments.putIfAbsent(doctorId,new TreeMap<>());
-        TreeMap<LocalDateTime,Appointment> schedule=appointments.get(doctorId);
+    public void addAppointment(Appointment appointment){
+        appointments.putIfAbsent(appointment.getDoctorId(),new TreeMap<>());
+        TreeMap<LocalDateTime,Appointment> schedule=appointments.get(appointment.getDoctorId());
 
         synchronized (schedule){
-            Appointment appointment=new Appointment(doctorId,patientId,patient,dateTime);
             appointment.setStatus(Appointment.Status.BOOKED);
-            schedule.put(dateTime,appointment);
+            schedule.put(appointment.getDateTime(),appointment);
         }
     }
     public boolean cancelAppointment(Appointment appointment){
