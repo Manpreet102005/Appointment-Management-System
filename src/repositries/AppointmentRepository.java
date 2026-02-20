@@ -9,4 +9,5 @@ public interface AppointmentRepository {
     public void addAppointment(int doctorId, LocalDateTime dateTime, int patientId, String patient);
     public boolean cancelAppointment(Appointment appointment);
     public List<Appointment> getAllAppointments();
+    public boolean isSlotAvailable(int doctorId, LocalDateTime dateTime);
 }

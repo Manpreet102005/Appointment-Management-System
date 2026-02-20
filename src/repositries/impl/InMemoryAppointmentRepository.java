@@ -1,5 +1,6 @@
 package repositries.impl;
 
+import com.sun.source.tree.Tree;
 import entities.Appointment;
 import repositries.AppointmentRepository;
 
@@ -39,5 +40,12 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
             allAppointments.addAll(schedules.values());
         }
         return allAppointments;
+    }
+    public boolean isSlotAvailable(int doctorId, LocalDateTime dateTime){
+        TreeMap<LocalDateTime,Appointment> schedule=appointments.get(doctorId);
+        if(schedule.containsKey(dateTime)){
+            return false;
+        }
+        return true;
     }
 }
