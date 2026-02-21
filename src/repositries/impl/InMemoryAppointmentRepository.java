@@ -35,6 +35,7 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
     }
     public boolean isSlotAvailable(int doctorId, LocalDateTime dateTime){
         TreeMap<LocalDateTime,Appointment> schedule=appointments.get(doctorId);
+        if(schedule==null) return true;
         return !schedule.containsKey(dateTime);
     }
 }

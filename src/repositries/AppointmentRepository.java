@@ -3,7 +3,6 @@ package repositries;
 import entities.Appointment;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
