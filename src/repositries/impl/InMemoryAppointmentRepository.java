@@ -1,12 +1,10 @@
 package repositries.impl;
 
-import com.sun.source.tree.Tree;
 import entities.Appointment;
 import repositries.AppointmentRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -32,19 +30,11 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         }
         return false;
     }
-    public List<Appointment> getAllAppointments(){
-        List<Appointment> allAppointments=new ArrayList<>();
-        for(int key: appointments.keySet()){
-            TreeMap<LocalDateTime,Appointment> schedules=appointments.get(key);
-            allAppointments.addAll(schedules.values());
-        }
-        return allAppointments;
+    public ConcurrentHashMap<Integer, TreeMap<LocalDateTime, Appointment>> getAllAppointments(){
+        return appointments;
     }
     public boolean isSlotAvailable(int doctorId, LocalDateTime dateTime){
         TreeMap<LocalDateTime,Appointment> schedule=appointments.get(doctorId);
-        if(schedule.containsKey(dateTime)){
-            return false;
-        }
-        return true;
+        return !schedule.containsKey(dateTime);
     }
 }
