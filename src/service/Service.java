@@ -2,14 +2,13 @@ package service;
 
 import entities.Appointment;
 import entities.Person;
-import entities.User;
 import repositries.*;
 import validations.AppointmentValidation;
 import validations.PersonValidation;
 
 import java.time.LocalDateTime;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
+
 
 public class Service {
     private final AppointmentRepository appointmentRepository;
@@ -22,7 +21,7 @@ public class Service {
                    DoctorRepository doctorRepository,
                    UserRepository userRepository,
                    AppointmentValidation appointmentValidation,
-                   PersonValidation personValidation){
+                   PersonValidation personValidation) {
         this.appointmentRepository=appointmentRepository;
         this.doctorRepository=doctorRepository;
         this.userRepository=userRepository;
@@ -30,7 +29,7 @@ public class Service {
         this.personValidation=personValidation;
     }
 
-    public Appointment.Status addAppointment(int doctorId, LocalDateTime dateTime, int patientId, String patient){
+    public  Appointment.Status addAppointment(int doctorId, LocalDateTime dateTime, int patientId, String patient){
         personValidation.validate(new Person(patientId,patient));
         appointmentValidation.validate(new Appointment(doctorId,patientId,patient,dateTime));
 
@@ -59,8 +58,7 @@ public class Service {
         }
         String patientName=userRepository.getUser(patientId).getFullName();
         Appointment appointment=new Appointment(doctorId,patientId,patientName,dateTime);
-        boolean flag=appointmentRepository.cancelAppointment(appointment);
-        return flag;
+        return appointmentRepository.cancelAppointment(appointment);
     }
 
     public boolean reScheduleAppointment(int doctorId,int patientId,LocalDateTime oldDateTime,LocalDateTime newDateTime){
@@ -74,8 +72,8 @@ public class Service {
         if(schedule.containsKey(newDateTime)){
             throw new RuntimeException("Slot already booked at "+newDateTime);
         }
-        appointmentRepository.cancelAppointment(new Appointment(doctorId,patientId,userRepository.getUser(patientId).getFullName(),oldDateTime));
-        appointmentRepository.addAppointment(new Appointment(doctorId,patientId,userRepository.getUser(patientId).getFullName(),newDateTime));
+        cancelAppointment(doctorId,patientId,oldDateTime);
+        addAppointment(doctorId,newDateTime, patientId,userRepository.getUser(patientId).getFullName());
         return true;
     }
 }
