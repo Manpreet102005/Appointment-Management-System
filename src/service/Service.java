@@ -1,13 +1,17 @@
 package service;
 
+import com.sun.source.tree.Tree;
 import entities.Appointment;
+import entities.Doctor;
 import entities.Person;
 import repositries.*;
 import validations.AppointmentValidation;
 import validations.PersonValidation;
 
+import javax.print.Doc;
 import java.time.LocalDateTime;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class Service {
@@ -75,5 +79,42 @@ public class Service {
         cancelAppointment(doctorId,patientId,oldDateTime);
         addAppointment(doctorId,newDateTime, patientId,userRepository.getUser(patientId).getFullName());
         return true;
+    }
+    public void allAppointments(){
+        ConcurrentHashMap<Integer, TreeMap<LocalDateTime,Appointment>> allAppointments;
+        allAppointments=appointmentRepository.getAllAppointments();
+
+        if (allAppointments==null || allAppointments.isEmpty()) {
+            System.out.println("No appointments scheduled in the system.");
+            return;
+        }
+        for(int doctorID: allAppointments.keySet()){
+            Doctor doctor=doctorRepository.getDoctor(doctorID);
+            System.out.println("Doctor Details");
+            System.out.println("--------------");
+            System.out.println("ID: "+doctorID);
+            System.out.println("Name: "+doctor.getFullName());
+            System.out.println("Specialization: "+doctor.getSpecialization());
+            System.out.println();
+            TreeMap<LocalDateTime,Appointment> schedule=allAppointments.get(doctorID);
+
+            if (schedule == null || schedule.isEmpty()) {
+                System.out.println("No appointments for this doctor.");
+                continue;
+            }
+            System.out.println("Appointments");
+            System.out.println("------------");
+            System.out.printf("%-20s %-12s %-20s %-10s%n","Date & Time", "Patient ID", "Patient Name", "Status");
+            System.out.println("--------------------------------------------------------------------------");
+
+            for (Appointment appointment : schedule.values()) {
+                System.out.printf("%-20s %-12d %-20s %-10s%n",
+                        appointment.getDateTime(),
+                        appointment.getPatientId(),
+                        appointment.getPatientName(),
+                        appointment.getStatus()
+                );
+            }
+        }
     }
 }
