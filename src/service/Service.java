@@ -8,6 +8,7 @@ import validations.AppointmentValidation;
 import validations.PersonValidation;
 
 import java.time.LocalDateTime;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Service {
@@ -60,5 +61,21 @@ public class Service {
         Appointment appointment=new Appointment(doctorId,patientId,patientName,dateTime);
         boolean flag=appointmentRepository.cancelAppointment(appointment);
         return flag;
+    }
+
+    public boolean reScheduleAppointment(int doctorId,int patientId,LocalDateTime oldDateTime,LocalDateTime newDateTime){
+        TreeMap<LocalDateTime,Appointment> schedule=appointmentRepository.getAllAppointments().get(doctorId);
+        if(schedule==null) {
+            throw new RuntimeException("No appointment exist for doctor: "+doctorRepository.getDoctor(doctorId).getFullName());
+        }
+        if(!schedule.containsKey(oldDateTime)){
+            throw new RuntimeException("No scheduled appointment at "+oldDateTime);
+        }
+        if(schedule.containsKey(newDateTime)){
+            throw new RuntimeException("Slot already booked at "+newDateTime);
+        }
+        appointmentRepository.cancelAppointment(new Appointment(doctorId,patientId,userRepository.getUser(patientId).getFullName(),oldDateTime));
+        appointmentRepository.addAppointment(new Appointment(doctorId,patientId,userRepository.getUser(patientId).getFullName(),newDateTime));
+        return true;
     }
 }
