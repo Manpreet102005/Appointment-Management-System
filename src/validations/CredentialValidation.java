@@ -16,7 +16,7 @@ public class CredentialValidation {
     public CredentialValidation(){
         addingAllowedCharacters();
     }
-    public boolean validate(String username, String password){
+    public static boolean validate(String username, String password){
         if(username.length()<5 || username.length()>12){
             throw new RuntimeException("Username length should be between 5 and 12.");
         }
