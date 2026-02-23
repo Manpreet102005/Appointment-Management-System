@@ -13,8 +13,10 @@ public class CredentialValidation {
         }
         allowedCharacters.add('@');
     }
-    public CredentialValidation(String username, String password){
+    public CredentialValidation(){
         addingAllowedCharacters();
+    }
+    public boolean validate(String username, String password){
         if(username.length()<5 || username.length()>12){
             throw new RuntimeException("Username length should be between 5 and 12.");
         }
@@ -26,6 +28,8 @@ public class CredentialValidation {
         if(password.length()<8){
             throw new RuntimeException("Password length should be atleast 8");
         }
+        return true;
     }
+
 
 }
