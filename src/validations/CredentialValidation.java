@@ -1,10 +1,18 @@
 package validations;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CredentialValidation {
-    static ArrayList<Character> allowedCharacters=new ArrayList<>();
-    private static void addingAllowedCharacters() {
+    private final Set<Character> allowedCharacters;
+
+    public CredentialValidation(){
+        allowedCharacters=new HashSet<>();
+        addingAllowedCharacters();
+    }
+
+    private  void addingAllowedCharacters() {
         for (char c = 'a'; c <= 'z'; c++) {
             allowedCharacters.add(c);
         }
@@ -13,10 +21,8 @@ public class CredentialValidation {
         }
         allowedCharacters.add('@');
     }
-    public CredentialValidation(){
-        addingAllowedCharacters();
-    }
-    public static boolean validate(String username, String password){
+
+    public  boolean validate(String username, String password){
         if(username.length()<5 || username.length()>12){
             throw new RuntimeException("Username length should be between 5 and 12.");
         }

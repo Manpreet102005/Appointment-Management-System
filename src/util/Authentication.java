@@ -1,68 +1,73 @@
 package util;
 
 
+import repositries.impl.InMemoryAuthorisedUsersRepository;
 import validations.CredentialValidation;
 
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Authentication {
-    private final ConcurrentHashMap<String,String> authorisedUsers;
+    private final InMemoryAuthorisedUsersRepository authorisedRepo;
+    private final CredentialValidation credentialValidation;
 
-    public Authentication(ConcurrentHashMap<String,String> authorisedUsers){
-        this.authorisedUsers=authorisedUsers;
+    public Authentication(){
+        this.authorisedRepo=new InMemoryAuthorisedUsersRepository();
+        this.credentialValidation=new CredentialValidation();
     }
+
     public void addAuthorisedUser(String username, String password) {
-        boolean flag = CredentialValidation.validate(username, password);
+        boolean flag = credentialValidation.validate(username, password);
         if (flag) {
-            if(authorisedUsers.containsKey(username)) {
+            if(authorisedRepo.authorisedUsers.containsKey(username)) {
                 throw new RuntimeException("username already exists.");
             }
-            synchronized (authorisedUsers) {
-                authorisedUsers.put(username, password);
+            synchronized (authorisedRepo.authorisedUsers) {
+                authorisedRepo.authorisedUsers.put(username, password);
             }
         }
     }
 
     public boolean login (String username, String password){
-        if(!authorisedUsers.containsKey(username)){
+        if(!authorisedRepo.authorisedUsers.containsKey(username)){
             throw new RuntimeException("No User Found with username: "+username);
         }
-        if(password.equals(authorisedUsers.get(username))){
+        if(password.equals(authorisedRepo.authorisedUsers.get(username))){
             return true;
         }
         throw new RuntimeException("Incorrect Password! Try Again");
     }
 
     public void changePassword (String username, String currentPassword, String newPassword){
-        if(!authorisedUsers.containsKey(username)){
+        if(!authorisedRepo.authorisedUsers.containsKey(username)){
             throw new RuntimeException("No user found with username: "+username);
         }
-        if(!currentPassword.equals(authorisedUsers.get(username))){
+        if(!currentPassword.equals(authorisedRepo.authorisedUsers.get(username))){
             throw new RuntimeException("Password Mismatch! Try Again");
         }
-        if(CredentialValidation.validate(username,newPassword)) {
-            authorisedUsers.put(username, newPassword);
+        if(credentialValidation.validate(username,newPassword)) {
+            authorisedRepo.authorisedUsers.put(username, newPassword);
         }
     }
 
     public void removeAuthorisedUser(String username, String password){
-        if(!authorisedUsers.containsKey(username)){
+        if(!authorisedRepo.authorisedUsers.containsKey(username)){
             throw new RuntimeException("No user found with username: "+username);
         }
-        if(!password.equals(authorisedUsers.get(username))){
+        if(!password.equals(authorisedRepo.authorisedUsers.get(username))){
             throw new RuntimeException("Password Mismatch! Try Again");
         }
-        authorisedUsers.remove(username);
+        authorisedRepo.authorisedUsers.remove(username);
     }
 
     public void showAuthorisedUsers(){
-        if(authorisedUsers.isEmpty()){
+        if(authorisedRepo.authorisedUsers.isEmpty()){
             System.out.println("No Authorised User Found");
         }
         System.out.println("List Of Authorised Users");
         System.out.println("-".repeat(24));
-        for(String username:authorisedUsers.keySet()){
+        for(String username:authorisedRepo.authorisedUsers.keySet()){
             System.out.println(username);
         }
     }
+
+
 }
