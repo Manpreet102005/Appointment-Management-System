@@ -2,6 +2,7 @@ package repositries.impl;
 
 import entities.User;
 import repositries.UserRepository;
+import validations.PersonValidation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ public class InMemoryUserRepository implements UserRepository {
     ConcurrentHashMap<Integer,User> users=new ConcurrentHashMap<>();
 
     public synchronized void addUser(User user){
+        PersonValidation.validate(user);
         users.put(user.getId(),user);
     }
     public User getUser(int id){

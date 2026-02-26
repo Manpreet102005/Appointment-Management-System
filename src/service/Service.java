@@ -4,6 +4,7 @@ import com.sun.source.tree.Tree;
 import entities.Appointment;
 import entities.Doctor;
 import entities.Person;
+import entities.User;
 import repositries.*;
 import validations.AppointmentValidation;
 import validations.PersonValidation;
@@ -33,9 +34,12 @@ public class Service {
         this.personValidation=personValidation;
     }
 
-    public  Appointment.Status addAppointment(int doctorId, LocalDateTime dateTime, int patientId, String patient){
-        personValidation.validate(new Person(patientId,patient));
-        appointmentValidation.validate(new Appointment(doctorId,patientId,patient,dateTime));
+    public  Appointment.Status addAppointment(int doctorId, LocalDateTime dateTime, int patientId){
+        User patient = userRepository.getUser(patientId);
+
+        if (patient == null) {
+            throw new RuntimeException("Patient not registered.");
+        }
 
         if(doctorRepository.getDoctor(doctorId)==null){
             throw new RuntimeException("Doctor Not Found");
@@ -52,17 +56,27 @@ public class Service {
             throw new RuntimeException("Slot already booked");
         }
 
-        Appointment appointment=new Appointment(doctorId,patientId,patient,dateTime);
+        Appointment appointment=new Appointment(doctorId,patientId, patient.getFullName(), dateTime);
 
         appointmentRepository.addAppointment(appointment);
         return appointment.getStatus();
     }
 
     public boolean cancelAppointment(int doctorId, int patientId, LocalDateTime dateTime) {
+        Doctor doctor = doctorRepository.getDoctor(doctorId);
+        if (doctor == null) {
+            throw new IllegalArgumentException("Doctor does not exist.");
+        }
+
+
+
         if(dateTime.isBefore(LocalDateTime.now())){
             throw new RuntimeException("Appointments can not be cancelled in past.");
         }
         String patientName=userRepository.getUser(patientId).getFullName();
+        if(patientName ==null){
+            throw new RuntimeException("No Appointment Exist");
+        }
         Appointment appointment=new Appointment(doctorId,patientId,patientName,dateTime);
         return appointmentRepository.cancelAppointment(appointment);
     }

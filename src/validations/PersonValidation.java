@@ -4,11 +4,8 @@ import entities.Person;
 import java.util.ArrayList;
 
 public class PersonValidation {
-    Person person;
-    public PersonValidation(Person person){
-        this.person=person;
-    }
-    public void isAlphabetsOnly(String fullName){
+
+    public static void isAlphabetsOnly(String fullName){
         ArrayList<Character> legalNamingLiterals=new ArrayList<>();
         for(char c='a';c<='z';c++){
             legalNamingLiterals.add(c);
@@ -19,7 +16,7 @@ public class PersonValidation {
             }
         }
     }
-    public boolean validate(Person person){
+    public static void validate(Person person){
         if(person==null){
             throw new IllegalArgumentException("Person can not be null");
         }
@@ -30,6 +27,5 @@ public class PersonValidation {
         if(person.getId()<=0){
             throw new IllegalArgumentException("Id can not be negative.");
         }
-        return true;
     }
 }
