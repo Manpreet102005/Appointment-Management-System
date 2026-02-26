@@ -17,7 +17,7 @@ public class Appointment {
         this.patientId=patientId;
         this.patientName=patientName;
         this.dateTime=dateTime;
-        this.status=Status.CANCELLED; // assuming cancelled by default
+        this.status=Status.BOOKED;
     }
 
     public int getPatientId(){
