@@ -41,8 +41,10 @@ public class Service {
             throw new RuntimeException("Doctor Not Found");
         }
 
-        if(dateTime.isAfter(LocalDateTime.of(dateTime.getYear(),dateTime.getMonth(),dateTime.getDayOfMonth(),20,30))
-        && dateTime.isBefore(LocalDateTime.of(dateTime.getYear(),dateTime.getMonth(),dateTime.getDayOfMonth(),10,0))){
+        LocalDateTime start = LocalDateTime.of(dateTime.getYear(),dateTime.getMonth(),dateTime.getDayOfMonth(),10, 0);
+        LocalDateTime end = LocalDateTime.of(dateTime.getYear(),dateTime.getMonth(),dateTime.getDayOfMonth(),20, 30);
+
+        if (dateTime.isBefore(start)|| dateTime.isAfter(end)) {
             throw new RuntimeException("Working Hours: 10:00 am to 8:30 pm");
         }
 
@@ -80,41 +82,6 @@ public class Service {
         addAppointment(doctorId,newDateTime, patientId,userRepository.getUser(patientId).getFullName());
         return true;
     }
-    public void allAppointments(){
-        ConcurrentHashMap<Integer, TreeMap<LocalDateTime,Appointment>> allAppointments;
-        allAppointments=appointmentRepository.getAllAppointments();
 
-        if (allAppointments==null || allAppointments.isEmpty()) {
-            System.out.println("No appointments scheduled in the system.");
-            return;
-        }
-        for(int doctorID: allAppointments.keySet()){
-            Doctor doctor=doctorRepository.getDoctor(doctorID);
-            System.out.println("Doctor Details");
-            System.out.println("--------------");
-            System.out.println("ID: "+doctorID);
-            System.out.println("Name: "+doctor.getFullName());
-            System.out.println("Specialization: "+doctor.getSpecialization());
-            System.out.println();
-            TreeMap<LocalDateTime,Appointment> schedule=allAppointments.get(doctorID);
-
-            if (schedule == null || schedule.isEmpty()) {
-                System.out.println("No appointments for this doctor.");
-                continue;
-            }
-            System.out.println("Appointments");
-            System.out.println("------------");
-            System.out.printf("%-20s %-12s %-20s %-10s%n","Date & Time", "Patient ID", "Patient Name", "Status");
-            System.out.println("--------------------------------------------------------------------------");
-
-            for (Appointment appointment : schedule.values()) {
-                System.out.printf("%-20s %-12d %-20s %-10s%n",
-                        appointment.getDateTime(),
-                        appointment.getPatientId(),
-                        appointment.getPatientName(),
-                        appointment.getStatus()
-                );
-            }
-        }
-    }
 }
+
