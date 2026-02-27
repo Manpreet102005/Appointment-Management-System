@@ -60,9 +60,10 @@ public class Service {
             throw new RuntimeException("Doctor is not available");
         }
 
-        if(!appointmentRepository.getAllAppointmentsOf(doctorId).containsKey(dateTime)){
+        if (!appointmentRepository.appointmentExists(doctorId, dateTime)) {
             throw new RuntimeException("No Appointment exist with these details");
         }
+
         if(dateTime.isBefore(LocalDateTime.now())){
             throw new RuntimeException("Appointments can not be cancelled in past.");
         }
