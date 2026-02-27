@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class InMemoryAppointmentRepository implements AppointmentRepository {
     ConcurrentHashMap<Integer, TreeMap<LocalDateTime, Appointment>> appointments=new ConcurrentHashMap<>();
-
+    @Override
     public void addAppointment(Appointment appointment){
         appointments.putIfAbsent(appointment.getDoctorId(),new TreeMap<>());
         TreeMap<LocalDateTime,Appointment> schedule=appointments.get(appointment.getDoctorId());
@@ -19,6 +19,7 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
             schedule.put(appointment.getDateTime(),appointment);
         }
     }
+    @Override
     public boolean cancelAppointment(Appointment appointment){
         TreeMap<LocalDateTime,Appointment> schedule=appointments.get(appointment.getDoctorId());
         if(schedule.containsKey(appointment.getDateTime())) {
@@ -29,14 +30,17 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         }
         return false;
     }
+    @Override
     public TreeMap<LocalDateTime,Appointment> getAllAppointmentsOf(int doctorId){
         return appointments.get(doctorId);
     }
+    @Override
     public boolean isSlotAvailable(int doctorId, LocalDateTime dateTime){
         TreeMap<LocalDateTime,Appointment> schedule=appointments.get(doctorId);
         if(schedule==null) return true;
         return !schedule.containsKey(dateTime);
     }
+    @Override
     public ConcurrentHashMap.KeySetView<Integer, TreeMap<LocalDateTime, Appointment>> getAvailableDoctors(){
         return appointments.keySet();
     }
