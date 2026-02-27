@@ -4,7 +4,6 @@ import entities.Appointment;
 import repositries.AppointmentRepository;
 
 import java.time.LocalDateTime;
-
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,12 +29,15 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         }
         return false;
     }
-    public ConcurrentHashMap<Integer, TreeMap<LocalDateTime, Appointment>> getAllAppointments(){
-        return appointments;
+    public TreeMap<LocalDateTime,Appointment> getAllAppointmentsOf(int doctorId){
+        return appointments.get(doctorId);
     }
     public boolean isSlotAvailable(int doctorId, LocalDateTime dateTime){
         TreeMap<LocalDateTime,Appointment> schedule=appointments.get(doctorId);
         if(schedule==null) return true;
         return !schedule.containsKey(dateTime);
+    }
+    public ConcurrentHashMap.KeySetView<Integer, TreeMap<LocalDateTime, Appointment>> getAvailableDoctors(){
+        return appointments.keySet();
     }
 }

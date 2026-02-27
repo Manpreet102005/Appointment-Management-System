@@ -68,7 +68,7 @@ public class Service {
             throw new IllegalArgumentException("Doctor does not exist.");
         }
 
-
+        if(appointmentRepository.con)
 
         if(dateTime.isBefore(LocalDateTime.now())){
             throw new RuntimeException("Appointments can not be cancelled in past.");
