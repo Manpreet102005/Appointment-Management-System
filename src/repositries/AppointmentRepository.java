@@ -7,13 +7,15 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public interface AppointmentRepository {
-    public void addAppointment(Appointment appointment);
+     void addAppointment(Appointment appointment);
 
-    public boolean cancelAppointment(Appointment appointment);
+     boolean cancelAppointment(Appointment appointment);
 
-    public boolean isSlotAvailable(int doctorId, LocalDateTime dateTime);
+     boolean isSlotAvailable(int doctorId, LocalDateTime dateTime);
 
-    public TreeMap<LocalDateTime, Appointment> getAllAppointmentsOf(int doctorId);
+     TreeMap<LocalDateTime, Appointment> getAllAppointmentsOf(int doctorId);
+
+     ConcurrentHashMap<Integer,TreeMap<LocalDateTime, Appointment>> getAllAppointments();
 
     ConcurrentHashMap.KeySetView<Integer, TreeMap<LocalDateTime, Appointment>> getAvailableDoctors();
 }

@@ -44,4 +44,9 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
     public ConcurrentHashMap.KeySetView<Integer, TreeMap<LocalDateTime, Appointment>> getAvailableDoctors(){
         return appointments.keySet();
     }
+    @Override
+    public ConcurrentHashMap<Integer,TreeMap<LocalDateTime, Appointment>> getAllAppointments(){
+        return appointments;
+    }
+
 }

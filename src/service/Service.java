@@ -68,21 +68,23 @@ public class Service {
             throw new IllegalArgumentException("Doctor does not exist.");
         }
 
-        if(appointmentRepository.con)
+        if(!appointmentRepository.getAllAppointments().containsKey(doctorId)){
+            throw new RuntimeException("Doctor is not available");
+        }
 
+        if(!appointmentRepository.getAllAppointmentsOf(doctorId).containsKey(dateTime)){
+            throw new RuntimeException("No Appointment exist with these details");
+        }
         if(dateTime.isBefore(LocalDateTime.now())){
             throw new RuntimeException("Appointments can not be cancelled in past.");
         }
-        String patientName=userRepository.getUser(patientId).getFullName();
-        if(patientName ==null){
-            throw new RuntimeException("No Appointment Exist");
-        }
-        Appointment appointment=new Appointment(doctorId,patientId,patientName,dateTime);
+
+        Appointment appointment=new Appointment(doctorId,patientId,userRepository.getUser(patientId).getFullName(),dateTime);
         return appointmentRepository.cancelAppointment(appointment);
     }
 
     public boolean reScheduleAppointment(int doctorId,int patientId,LocalDateTime oldDateTime,LocalDateTime newDateTime){
-        TreeMap<LocalDateTime,Appointment> schedule=appointmentRepository.getAllAppointments().get(doctorId);
+        TreeMap<LocalDateTime,Appointment> schedule=appointmentRepository.getAllAppointmentsOf(doctorId);
         if(schedule==null) {
             throw new RuntimeException("No appointment exist for doctor: "+doctorRepository.getDoctor(doctorId).getFullName());
         }
@@ -93,7 +95,7 @@ public class Service {
             throw new RuntimeException("Slot already booked at "+newDateTime);
         }
         cancelAppointment(doctorId,patientId,oldDateTime);
-        addAppointment(doctorId,newDateTime, patientId,userRepository.getUser(patientId).getFullName());
+        addAppointment(doctorId,newDateTime, patientId);
         return true;
     }
 
