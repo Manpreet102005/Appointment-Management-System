@@ -1,37 +1,25 @@
 package service;
 
-import com.sun.source.tree.Tree;
 import entities.Appointment;
 import entities.Doctor;
-import entities.Person;
 import entities.User;
 import repositries.*;
-import validations.AppointmentValidation;
-import validations.PersonValidation;
 
-import javax.print.Doc;
 import java.time.LocalDateTime;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 public class Service {
     private final AppointmentRepository appointmentRepository;
     private final DoctorRepository doctorRepository;
     private final UserRepository userRepository;
-    private final AppointmentValidation appointmentValidation;
-    private final PersonValidation personValidation;
 
     public Service(AppointmentRepository appointmentRepository,
                    DoctorRepository doctorRepository,
-                   UserRepository userRepository,
-                   AppointmentValidation appointmentValidation,
-                   PersonValidation personValidation) {
+                   UserRepository userRepository) {
         this.appointmentRepository=appointmentRepository;
         this.doctorRepository=doctorRepository;
         this.userRepository=userRepository;
-        this.appointmentValidation=appointmentValidation;
-        this.personValidation=personValidation;
     }
 
     public  Appointment.Status addAppointment(int doctorId, LocalDateTime dateTime, int patientId){
