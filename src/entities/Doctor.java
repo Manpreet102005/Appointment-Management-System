@@ -3,7 +3,7 @@ package entities;
 public class Doctor extends Person{
     private final String specialization;
 
-    public Doctor(int id,String fullName,String specialization){
+    public Doctor(int id,String fullName){
         super(id,fullName);
         this.specialization=specialization;
     }

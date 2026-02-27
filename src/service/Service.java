@@ -6,7 +6,7 @@ import entities.User;
 import repositries.*;
 
 import java.time.LocalDateTime;
-import java.util.TreeMap;
+
 
 
 public class Service {
@@ -72,15 +72,17 @@ public class Service {
     }
 
     public boolean reScheduleAppointment(int doctorId,int patientId,LocalDateTime oldDateTime,LocalDateTime newDateTime){
-        TreeMap<LocalDateTime,Appointment> schedule=appointmentRepository.getAllAppointmentsOf(doctorId);
-        if(schedule==null) {
-            throw new RuntimeException("No appointment exist for doctor: "+doctorRepository.getDoctor(doctorId).getFullName());
+        Doctor doctor=doctorRepository.getDoctor(doctorId);
+
+        if(doctor==null) {
+            throw new RuntimeException("Doctor Not Found");
         }
-        if(!schedule.containsKey(oldDateTime)){
-            throw new RuntimeException("No scheduled appointment at "+oldDateTime);
+        if (!appointmentRepository.appointmentExists(doctorId, oldDateTime)) {
+            throw new RuntimeException("No scheduled appointment at " + oldDateTime);
         }
-        if(schedule.containsKey(newDateTime)){
-            throw new RuntimeException("Slot already booked at "+newDateTime);
+
+        if (!appointmentRepository.isSlotAvailable(doctorId, newDateTime)) {
+            throw new RuntimeException("Slot already booked at " + newDateTime);
         }
         cancelAppointment(doctorId,patientId,oldDateTime);
         addAppointment(doctorId,newDateTime, patientId);

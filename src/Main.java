@@ -1,5 +1,97 @@
+import entities.Doctor;
+import entities.User;
+import repositries.*;
+import service.Service;
+import repositries.impl.*;
+
+import java.time.LocalDateTime;
+import java.util.Scanner;
+
 public class Main {
+    private static DoctorRepository doctorRepository = new InMemoryDoctorRepository();
+    private static UserRepository userRepository = new InMemoryUserRepository();
+    private static AppointmentRepository appointmentRepository = new InMemoryAppointmentRepository();
+    private static Service appointmentService = new Service(appointmentRepository, doctorRepository, userRepository);
+
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+
+        Scanner sc = new Scanner(System.in);
+        boolean running = true;
+        while (running) {
+            System.out.println("\n===== HOSPITAL MANAGEMENT MENU =====");
+            System.out.println("1. Add Doctor");
+            System.out.println("2. Add Patient");
+            System.out.println("3. Book Appointment");
+            System.out.println("4. Cancel Appointment");
+            System.out.println("5. View All Appointments");
+            System.out.println("0. Exit");
+            System.out.print("Enter choice: ");
+
+            int choice = sc.nextInt();
+            sc.nextLine();
+            try {
+                switch (choice) {
+                    case 1:
+                        System.out.print("Enter Doctor ID: ");
+                        int dId = sc.nextInt();
+                        sc.nextLine();
+                        System.out.print("Enter Doctor Name: ");
+                        String dName = sc.nextLine();
+                        doctorRepository.addDoctor(new Doctor(dId, dName));
+                        System.out.println("Doctor added successfully!");
+                        break;
+
+                    case 2:
+                        System.out.print("Enter Patient ID: ");
+                        int pId = sc.nextInt();
+                        sc.nextLine();
+
+                        System.out.print("Enter Patient Name: ");
+                        String pName = sc.nextLine();
+
+                        userRepository.addUser(new User(pId, pName));
+                        System.out.println("Patient added successfully!");
+                        break;
+
+                    case 3:
+                        System.out.print("Enter Doctor ID: ");
+                        int bookDocId = sc.nextInt();
+
+                        System.out.print("Enter Patient ID: ");
+                        int bookPatId = sc.nextInt();
+                        appointmentService.addAppointment(bookDocId, LocalDateTime.now(),bookPatId);
+                        System.out.println("Appointment booked successfully!");
+                        break;
+
+                    case 4:
+                        System.out.print("Enter Doctor ID: ");
+                        int cancelDocId = sc.nextInt();
+
+                        System.out.print("Enter Patient ID: ");
+                        int cancelPatId = sc.nextInt();
+
+                        appointmentService.cancelAppointment(cancelDocId, cancelPatId);
+                        System.out.println("Appointment cancelled successfully!");
+                        break;
+
+                    case 5:
+                        appointmentRepository.getAllAppointments()
+                                .forEach(System.out::println);
+                        break;
+
+                    case 0:
+                        running = false;
+                        System.out.println("Exiting system...");
+                        break;
+
+                    default:
+                        System.out.println("Invalid choice!");
+                }
+
+            } catch (Exception e) {
+                System.out.println("Error: "+ e.getMessage());
+            }
+        }
+        sc.close();
     }
 }

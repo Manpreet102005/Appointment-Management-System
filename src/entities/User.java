@@ -6,7 +6,7 @@ public class User extends Person {
         PATIENT, ADMIN
     }
     private final Role role;
-    public User(int id, String fullName, Role role){
+    public User(int id, String fullName){
         super(id,fullName);
         this.role=role;
     }

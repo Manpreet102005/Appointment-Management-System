@@ -13,9 +13,12 @@ public interface AppointmentRepository {
 
      boolean isSlotAvailable(int doctorId, LocalDateTime dateTime);
 
-     TreeMap<LocalDateTime, Appointment> getAllAppointmentsOf(int doctorId);
+     TreeMap<Integer, Appointment> getAllAppointmentsOf(int doctorId);
 
-     ConcurrentHashMap<Integer,TreeMap<LocalDateTime, Appointment>> getAllAppointments();
+     ConcurrentHashMap<Integer,TreeMap<Integer, Appointment>> getAllAppointments();
 
-    ConcurrentHashMap.KeySetView<Integer, TreeMap<LocalDateTime, Appointment>> getAvailableDoctors();
+     ConcurrentHashMap.KeySetView<Integer, TreeMap<Integer, Appointment>> getAvailableDoctors();
+
+    boolean appointmentExists(int doctorId, LocalDateTime dateTime);
+
 }
