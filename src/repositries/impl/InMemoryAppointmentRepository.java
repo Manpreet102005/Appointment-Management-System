@@ -37,6 +37,7 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
     @Override
     public boolean isSlotAvailable(int doctorId, LocalDateTime dateTime){
         TreeMap<Integer,Appointment> schedule=appointments.get(doctorId);
+        if(schedule == null) return true;
         for(Appointment a: schedule.values()){
             if(a.getDateTime().equals(dateTime)) return false;
         }
@@ -55,7 +56,7 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         TreeMap<Integer,Appointment> appointments=getAllAppointmentsOf(doctorId);
         if(appointments==null) return false;
         for(Integer a: appointments.keySet()){
-            if(a.equals(patientId) && appointments.get(patientId).getDateTime()==dateTime) return true;
+            if(a.equals(patientId) && appointments.get(patientId).getDateTime().equals(dateTime)) return true;
         }
         return false;
     }

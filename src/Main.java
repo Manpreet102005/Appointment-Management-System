@@ -1,3 +1,4 @@
+import entities.Appointment;
 import entities.Doctor;
 import entities.Patient;
 import repositries.*;
@@ -5,7 +6,10 @@ import service.Service;
 import repositries.impl.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Scanner;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Main {
     private static DoctorRepository doctorRepository = new InMemoryDoctorRepository();
@@ -24,6 +28,8 @@ public class Main {
             System.out.println("3. Book Appointment");
             System.out.println("4. Cancel Appointment");
             System.out.println("5. View All Appointments");
+            System.out.println("6. View All Patients");
+            System.out.println("7. View All Doctors");
             System.out.println("0. Exit");
             System.out.print("Enter choice: ");
 
@@ -35,11 +41,14 @@ public class Main {
                         System.out.print("Enter Doctor ID: ");
                         int dId = sc.nextInt();
                         sc.nextLine();
+
                         System.out.print("Enter Doctor Name: ");
                         String dName = sc.nextLine();
-                        String dSpec=sc.nextLine();
-                        doctorRepository.addDoctor(new Doctor(dId, dName,dSpec));
-                        System.out.println("Doctor added successfully!");
+
+                        System.out.print("Enter Specialization: ");
+                        String dSpec = sc.nextLine();
+
+                        doctorRepository.addDoctor(new Doctor(dId,dName,dSpec));
                         break;
 
                     case 2:
@@ -60,6 +69,7 @@ public class Main {
 
                         System.out.print("Enter Patient ID: ");
                         int bookPatId = sc.nextInt();
+
                         appointmentService.addAppointment(bookDocId, LocalDateTime.now(),bookPatId);
                         System.out.println("Appointment booked successfully!");
                         break;
@@ -76,8 +86,18 @@ public class Main {
                         break;
 
                     case 5:
-                        appointmentRepository.getAllAppointments()
-                                .forEach(System.out::println);
+                        ConcurrentHashMap<Integer, TreeMap<Integer, Appointment>> allAppointments = appointmentRepository.getAllAppointments();
+                        allAppointments.values().forEach(System.out::println);
+                        break;
+
+                    case 6:
+                        List<Patient> allPatients = patientRepository.getAllPatients();
+                        allPatients.forEach(System.out::println);
+                        break;
+
+                    case 7:
+                        List<Doctor> allDoctors = doctorRepository.getAllDoctors();
+                        allDoctors.forEach(System.out::println);
                         break;
 
                     case 0:
