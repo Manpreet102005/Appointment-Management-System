@@ -8,7 +8,6 @@ import repositries.*;
 import java.time.LocalDateTime;
 
 
-
 public class Service {
     private final AppointmentRepository appointmentRepository;
     private final DoctorRepository doctorRepository;
@@ -84,6 +83,5 @@ public class Service {
         addAppointment(doctorId,newDateTime, patientId);
         return true;
     }
-
 }
 
