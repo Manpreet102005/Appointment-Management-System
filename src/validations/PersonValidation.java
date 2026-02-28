@@ -10,12 +10,13 @@ public class PersonValidation {
         for(char c='a';c<='z';c++){
             legalNamingLiterals.add(c);
         }
+        legalNamingLiterals.add(' ');
         for(int i=0;i<fullName.length();i++){
             if(!legalNamingLiterals.contains(fullName.toLowerCase().charAt(i))){
                 throw new IllegalArgumentException("Name must only contains a~z or A~Z");
             }
         }
-        legalNamingLiterals.add(' ');
+
     }
     public static void validate(Person person){
         if(person==null){
