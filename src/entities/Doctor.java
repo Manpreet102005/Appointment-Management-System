@@ -11,4 +11,8 @@ public class Doctor extends Person{
     public String getSpecialization(){
         return specialization;
     }
+    @Override
+    public String toString() {
+        return super.toString() + " | Specialization: " + specialization;
+    }
 }

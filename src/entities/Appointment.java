@@ -38,5 +38,15 @@ public class Appointment {
     public void setStatus(Status status){
         this.status=status;
     }
+    @Override
+    public String toString() {
+        return "Appointment{" +
+                "doctorId=" + doctorId +
+                ", patientId=" + patientId +
+                ", patientName='" + patientName + '\'' +
+                ", dateTime=" + dateTime +
+                ", status=" + status +
+                '}';
+    }
 
 }

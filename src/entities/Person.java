@@ -13,4 +13,12 @@ public class Person {
     public String getFullName(){
         return this.fullName;
     }
+    @Override
+    public String toString() {
+        return String.format(
+                "ID: %d | Name: %s",
+                id,
+                fullName
+        );
+    }
 }
