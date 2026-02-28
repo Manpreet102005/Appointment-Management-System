@@ -1,5 +1,5 @@
 import entities.Doctor;
-import entities.User;
+import entities.Patient;
 import repositries.*;
 import service.Service;
 import repositries.impl.*;
@@ -9,9 +9,9 @@ import java.util.Scanner;
 
 public class Main {
     private static DoctorRepository doctorRepository = new InMemoryDoctorRepository();
-    private static UserRepository userRepository = new InMemoryUserRepository();
+    private static PatientRepository patientRepository = new InMemoryPatientRepository();
     private static AppointmentRepository appointmentRepository = new InMemoryAppointmentRepository();
-    private static Service appointmentService = new Service(appointmentRepository, doctorRepository, userRepository);
+    private static Service appointmentService = new Service(appointmentRepository, doctorRepository, patientRepository);
 
     public static void main(String[] args) {
 
@@ -49,7 +49,7 @@ public class Main {
                         System.out.print("Enter Patient Name: ");
                         String pName = sc.nextLine();
 
-                        userRepository.addUser(new User(pId, pName));
+                        patientRepository.addUser(new Patient(pId, pName));
                         System.out.println("Patient added successfully!");
                         break;
 

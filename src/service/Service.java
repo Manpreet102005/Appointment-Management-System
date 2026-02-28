@@ -2,7 +2,7 @@ package service;
 
 import entities.Appointment;
 import entities.Doctor;
-import entities.User;
+import entities.Patient;
 import repositries.*;
 
 import java.time.LocalDateTime;
@@ -23,7 +23,7 @@ public class Service {
     }
 
     public  Appointment.Status addAppointment(int doctorId, LocalDateTime dateTime, int patientId){
-        User patient = userRepository.getUser(patientId);
+        Patient patient = userRepository.getUser(patientId);
 
         if (patient == null) {
             throw new RuntimeException("Patient not registered.");
