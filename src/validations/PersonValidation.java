@@ -15,6 +15,7 @@ public class PersonValidation {
                 throw new IllegalArgumentException("Name must only contains a~z or A~Z");
             }
         }
+        legalNamingLiterals.add(' ');
     }
     public static void validate(Person person){
         if(person==null){
