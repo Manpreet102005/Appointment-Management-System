@@ -20,11 +20,11 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         }
     }
     @Override
-    public boolean cancelAppointment(Appointment appointment){
-        TreeMap<Integer,Appointment> schedule=appointments.get(appointment.getDoctorId());
-        if(schedule.containsKey(appointment.getPatientId())) {
+    public boolean cancelAppointment(int doctorId, int patientId){
+        TreeMap<Integer,Appointment> schedule=appointments.get(doctorId);
+        if(schedule.containsKey(patientId)) {
             synchronized (schedule){
-                appointments.get(appointment.getDoctorId()).remove(appointment.getPatientId());
+                appointments.get(doctorId).remove(patientId);
                 return true;
             }
         }
@@ -51,11 +51,11 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         return appointments;
     }
     @Override
-    public boolean appointmentExists(int doctorId, LocalDateTime dateTime) {
-        TreeMap<Integer,Appointment>schedule = appointments.get(doctorId);
-        if(schedule==null) return false;
-        for(Appointment a: schedule.values()){
-            if(a.getDateTime().equals(dateTime)) return true;
+    public boolean appointmentExists(int doctorId, int patientId, LocalDateTime dateTime) {
+        TreeMap<Integer,Appointment> appointments=getAllAppointmentsOf(doctorId);
+        if(appointments==null) return false;
+        for(Integer a: appointments.keySet()){
+            if(a.equals(patientId) && appointments.get(patientId).getDateTime()==dateTime) return true;
         }
         return false;
     }

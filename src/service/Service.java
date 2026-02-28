@@ -12,18 +12,18 @@ import java.time.LocalDateTime;
 public class Service {
     private final AppointmentRepository appointmentRepository;
     private final DoctorRepository doctorRepository;
-    private final UserRepository userRepository;
+    private final PatientRepository patientRepository;
 
     public Service(AppointmentRepository appointmentRepository,
                    DoctorRepository doctorRepository,
-                   UserRepository userRepository) {
+                   PatientRepository patientRepository) {
         this.appointmentRepository=appointmentRepository;
         this.doctorRepository=doctorRepository;
-        this.userRepository=userRepository;
+        this.patientRepository=patientRepository;
     }
 
     public  Appointment.Status addAppointment(int doctorId, LocalDateTime dateTime, int patientId){
-        Patient patient = userRepository.getUser(patientId);
+        Patient patient = patientRepository.getPatient(patientId);
 
         if (patient == null) {
             throw new RuntimeException("Patient not registered.");
@@ -50,7 +50,7 @@ public class Service {
         return appointment.getStatus();
     }
 
-    public boolean cancelAppointment(int doctorId, int patientId, LocalDateTime dateTime) {
+    public boolean cancelAppointment(int doctorId, int patientId) {
         Doctor doctor = doctorRepository.getDoctor(doctorId);
         if (doctor == null) {
             throw new IllegalArgumentException("Doctor does not exist.");
@@ -59,17 +59,12 @@ public class Service {
         if(!appointmentRepository.getAllAppointments().containsKey(doctorId)){
             throw new RuntimeException("Doctor is not available");
         }
-
-        if (!appointmentRepository.appointmentExists(doctorId, dateTime)) {
+        LocalDateTime dateTime=appointmentRepository.getAllAppointmentsOf(doctorId).get(patientId).getDateTime();
+        if (!appointmentRepository.appointmentExists(doctorId, patientId, dateTime)){
             throw new RuntimeException("No Appointment exist with these details");
         }
 
-        if(dateTime.isBefore(LocalDateTime.now())){
-            throw new RuntimeException("Appointments can not be cancelled in past.");
-        }
-
-        Appointment appointment=new Appointment(doctorId,patientId,userRepository.getUser(patientId).getFullName(),dateTime);
-        return appointmentRepository.cancelAppointment(appointment);
+        return appointmentRepository.cancelAppointment(doctorId,patientId);
     }
 
     public boolean reScheduleAppointment(int doctorId,int patientId,LocalDateTime oldDateTime,LocalDateTime newDateTime){
@@ -78,14 +73,14 @@ public class Service {
         if(doctor==null) {
             throw new RuntimeException("Doctor Not Found");
         }
-        if (!appointmentRepository.appointmentExists(doctorId, oldDateTime)) {
+        if (!appointmentRepository.appointmentExists(doctorId,  patientId, oldDateTime)) {
             throw new RuntimeException("No scheduled appointment at " + oldDateTime);
         }
 
         if (!appointmentRepository.isSlotAvailable(doctorId, newDateTime)) {
             throw new RuntimeException("Slot already booked at " + newDateTime);
         }
-        cancelAppointment(doctorId,patientId,oldDateTime);
+        cancelAppointment(doctorId,patientId);
         addAppointment(doctorId,newDateTime, patientId);
         return true;
     }

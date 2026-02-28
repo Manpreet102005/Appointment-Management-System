@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public interface AppointmentRepository {
      void addAppointment(Appointment appointment);
 
-     boolean cancelAppointment(Appointment appointment);
+     boolean cancelAppointment(int doctorId, int patientId);
 
      boolean isSlotAvailable(int doctorId, LocalDateTime dateTime);
 
@@ -19,6 +19,6 @@ public interface AppointmentRepository {
 
      ConcurrentHashMap.KeySetView<Integer, TreeMap<Integer, Appointment>> getAvailableDoctors();
 
-    boolean appointmentExists(int doctorId, LocalDateTime dateTime);
+    boolean appointmentExists(int doctorId, int patientId, LocalDateTime oldDateTime);
 
 }

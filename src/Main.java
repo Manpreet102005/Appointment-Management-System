@@ -37,7 +37,8 @@ public class Main {
                         sc.nextLine();
                         System.out.print("Enter Doctor Name: ");
                         String dName = sc.nextLine();
-                        doctorRepository.addDoctor(new Doctor(dId, dName));
+                        String dSpec=sc.nextLine();
+                        doctorRepository.addDoctor(new Doctor(dId, dName,dSpec));
                         System.out.println("Doctor added successfully!");
                         break;
 
@@ -49,7 +50,7 @@ public class Main {
                         System.out.print("Enter Patient Name: ");
                         String pName = sc.nextLine();
 
-                        patientRepository.addUser(new Patient(pId, pName));
+                        patientRepository.addPatient(new Patient(pId, pName));
                         System.out.println("Patient added successfully!");
                         break;
 
