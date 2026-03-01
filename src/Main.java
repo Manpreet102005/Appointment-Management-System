@@ -73,6 +73,7 @@ public class Main {
 
                         System.out.print("Enter Patient ID: ");
                         int bookPatId = sc.nextInt();
+                        sc.nextLine();
 
                         System.out.println("Enter Appointment Time (yyyy-MM-dd HH:mm): ");
                         String appDateTimeString = sc.nextLine();
@@ -90,6 +91,7 @@ public class Main {
 
                         System.out.print("Enter Patient ID: ");
                         int cancelPatId = sc.nextInt();
+                        sc.nextLine();
 
                         Appointment.Status cancellationStatus =service.cancelAppointment(cancelDocId, cancelPatId);
                         if(cancellationStatus.equals(Appointment.Status.CANCELLED)) System.out.println("Appointment cancelled successfully!");
@@ -102,6 +104,7 @@ public class Main {
 
                         System.out.print("Enter Patient ID: ");
                         int patId = sc.nextInt();
+                        sc.nextLine();
 
                         System.out.println("Enter New Time (yyyy-MM-dd HH:mm): ");
                         String dateTimeString = sc.nextLine();
