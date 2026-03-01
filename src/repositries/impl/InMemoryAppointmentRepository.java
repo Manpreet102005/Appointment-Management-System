@@ -20,15 +20,15 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         }
     }
     @Override
-    public boolean cancelAppointment(int doctorId, int patientId){
+    public Appointment.Status cancelAppointment(int doctorId, int patientId){
         TreeMap<Integer,Appointment> schedule=appointments.get(doctorId);
         if(schedule.containsKey(patientId)) {
             synchronized (schedule){
                 appointments.get(doctorId).remove(patientId);
-                return true;
+                return Appointment.Status.CANCELLED;
             }
         }
-        return false;
+        return Appointment.Status.BOOKED;
     }
     @Override
     public TreeMap<Integer,Appointment> getAllAppointmentsOf(int doctorId){

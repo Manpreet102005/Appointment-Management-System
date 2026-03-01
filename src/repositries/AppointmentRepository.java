@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public interface AppointmentRepository {
      void addAppointment(Appointment appointment);
 
-     boolean cancelAppointment(int doctorId, int patientId);
+     Appointment.Status cancelAppointment(int doctorId, int patientId);
 
      boolean isSlotAvailable(int doctorId, LocalDateTime dateTime);
 

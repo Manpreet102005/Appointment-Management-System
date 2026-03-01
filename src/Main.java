@@ -59,7 +59,7 @@ public class Main {
                         System.out.print("Enter Patient Name: ");
                         String pName = sc.nextLine();
 
-                        patientRepository.addPatient(new Patient(pId, pName));
+                        service.addPatient(pId, pName);
                         System.out.println("Patient added successfully!");
                         break;
 
@@ -70,8 +70,9 @@ public class Main {
                         System.out.print("Enter Patient ID: ");
                         int bookPatId = sc.nextInt();
 
-                        service.addAppointment(bookDocId, LocalDateTime.now(),bookPatId);
-                        System.out.println("Appointment booked successfully!");
+                        Appointment.Status bookingStatus=service.addAppointment(bookDocId, LocalDateTime.now(),bookPatId);
+                        if(bookingStatus.equals(Appointment.Status.BOOKED)) System.out.println("Appointment booked successfully!");
+                        else System.out.println("Appointment Booking Failed. Try Again");
                         break;
 
                     case 4:
@@ -81,8 +82,9 @@ public class Main {
                         System.out.print("Enter Patient ID: ");
                         int cancelPatId = sc.nextInt();
 
-                        service.cancelAppointment(cancelDocId, cancelPatId);
-                        System.out.println("Appointment cancelled successfully!");
+                        Appointment.Status cancellationStatus =service.cancelAppointment(cancelDocId, cancelPatId);
+                        if(cancellationStatus.equals(Appointment.Status.CANCELLED)) System.out.println("Appointment cancelled successfully!");
+                        else System.out.println("Appointment Cancellation Failed. Try Again");
                         break;
 
                     case 5:

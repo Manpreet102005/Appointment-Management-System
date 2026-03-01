@@ -26,7 +26,14 @@ public class Service {
         PersonValidation.validate(new Person(doctorId,fullName));
         doctorRepository.addDoctor(new Doctor(doctorId,fullName,specialization));
     }
-    public  Appointment.Status addAppointment(int doctorId, LocalDateTime dateTime, int patientId){
+    public void removeDoctor(int doctorId){
+
+    }
+    public void addPatient(int patientId, String fullName){
+        PersonValidation.validate(new Person(patientId,fullName));
+        patientRepository.addPatient(new Patient(patientId,fullName));
+    }
+    public Appointment.Status addAppointment(int doctorId, LocalDateTime dateTime, int patientId){
         Patient patient = patientRepository.getPatient(patientId);
 
         if (patient == null) {
@@ -54,7 +61,7 @@ public class Service {
         return appointment.getStatus();
     }
 
-    public boolean cancelAppointment(int doctorId, int patientId) {
+    public Appointment.Status cancelAppointment(int doctorId, int patientId) {
         Doctor doctor = doctorRepository.getDoctor(doctorId);
         if (doctor == null) {
             throw new IllegalArgumentException("Doctor does not exist.");
