@@ -14,7 +14,7 @@ public class PersonValidation {
         legalNamingLiterals.add('.');
         for(int i=0;i<fullName.length();i++){
             if(!legalNamingLiterals.contains(fullName.toLowerCase().charAt(i))){
-                throw new IllegalArgumentException("Name must only contains a~z or A~Z");
+                throw new IllegalArgumentException("Name must only contains a~z, A~Z or .(dot)");
             }
         }
 
