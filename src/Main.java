@@ -15,7 +15,7 @@ public class Main {
     private static DoctorRepository doctorRepository = new InMemoryDoctorRepository();
     private static PatientRepository patientRepository = new InMemoryPatientRepository();
     private static AppointmentRepository appointmentRepository = new InMemoryAppointmentRepository();
-    private static Service appointmentService = new Service(appointmentRepository, doctorRepository, patientRepository);
+    private static Service service = new Service(appointmentRepository, doctorRepository, patientRepository);
 
     public static void main(String[] args) {
 
@@ -48,7 +48,7 @@ public class Main {
                         System.out.print("Enter Specialization: ");
                         String dSpec = sc.nextLine();
 
-                        doctorRepository.addDoctor(new Doctor(dId,dName,dSpec));
+                        service.addDoctor(dId,dName,dSpec);
                         break;
 
                     case 2:
@@ -70,7 +70,7 @@ public class Main {
                         System.out.print("Enter Patient ID: ");
                         int bookPatId = sc.nextInt();
 
-                        appointmentService.addAppointment(bookDocId, LocalDateTime.now(),bookPatId);
+                        service.addAppointment(bookDocId, LocalDateTime.now(),bookPatId);
                         System.out.println("Appointment booked successfully!");
                         break;
 
@@ -81,7 +81,7 @@ public class Main {
                         System.out.print("Enter Patient ID: ");
                         int cancelPatId = sc.nextInt();
 
-                        appointmentService.cancelAppointment(cancelDocId, cancelPatId);
+                        service.cancelAppointment(cancelDocId, cancelPatId);
                         System.out.println("Appointment cancelled successfully!");
                         break;
 
