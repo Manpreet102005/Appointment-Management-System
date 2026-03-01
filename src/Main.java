@@ -53,6 +53,7 @@ public class Main {
                         String dSpec = sc.nextLine();
 
                         service.addDoctor(dId,dName,dSpec);
+                        System.out.println("Doctor Added successfully!");
                         break;
 
                     case 2:
@@ -75,12 +76,13 @@ public class Main {
                         int bookPatId = sc.nextInt();
                         sc.nextLine();
 
-                        System.out.println("Enter Appointment Time (yyyy-MM-dd HH:mm): ");
+                        System.out.print("Enter Appointment Time (yyyy-MM-dd HH:mm): ");
                         String appDateTimeString = sc.nextLine();
 
                         LocalDateTime appDateTime = LocalDateTime.parse(appDateTimeString, formatter);
 
                         Appointment.Status bookingStatus=service.addAppointment(bookDocId, appDateTime,bookPatId);
+
                         if(bookingStatus.equals(Appointment.Status.BOOKED)) System.out.println("Appointment booked successfully!");
                         else System.out.println("Appointment Booking Failed. Try Again");
                         break;
@@ -106,7 +108,7 @@ public class Main {
                         int patId = sc.nextInt();
                         sc.nextLine();
 
-                        System.out.println("Enter New Time (yyyy-MM-dd HH:mm): ");
+                        System.out.print("Enter New Time (yyyy-MM-dd HH:mm): ");
                         String dateTimeString = sc.nextLine();
 
                         LocalDateTime newDateTime = LocalDateTime.parse(dateTimeString, formatter);
