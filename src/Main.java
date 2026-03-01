@@ -80,6 +80,9 @@ public class Main {
                         String appDateTimeString = sc.nextLine();
 
                         LocalDateTime appDateTime = LocalDateTime.parse(appDateTimeString, formatter);
+                        if(appDateTime.isBefore(LocalDateTime.now())){
+                            throw new
+                        }
 
                         Appointment.Status bookingStatus=service.addAppointment(bookDocId, appDateTime,bookPatId);
 

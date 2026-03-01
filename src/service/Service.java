@@ -8,6 +8,7 @@ import repositries.*;
 import validations.PersonValidation;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 
 
 public class Service {
@@ -26,9 +27,7 @@ public class Service {
         PersonValidation.validate(new Person(doctorId,fullName));
         doctorRepository.addDoctor(new Doctor(doctorId,fullName,specialization));
     }
-    public void removeDoctor(int doctorId){
 
-    }
     public void addPatient(int patientId, String fullName){
         PersonValidation.validate(new Person(patientId,fullName));
         patientRepository.addPatient(new Patient(patientId,fullName));
@@ -37,22 +36,25 @@ public class Service {
         Patient patient = patientRepository.getPatient(patientId);
 
         if (patient == null) {
-            throw new RuntimeException("Patient not registered.");
+            throw new NoSuchElementException("Patient not registered.");
         }
 
         if(doctorRepository.getDoctor(doctorId)==null){
-            throw new RuntimeException("Doctor Not Found");
+            throw new NoSuchElementException("Doctor Not Found");
         }
 
+        if(dateTime.isBefore(LocalDateTime.now())){
+            throw new IllegalArgumentException("Appointment can't be made in past");
+        }
         LocalDateTime start = LocalDateTime.of(dateTime.getYear(),dateTime.getMonth(),dateTime.getDayOfMonth(),10, 0);
         LocalDateTime end = LocalDateTime.of(dateTime.getYear(),dateTime.getMonth(),dateTime.getDayOfMonth(),20, 30);
 
         if (dateTime.isBefore(start)|| dateTime.isAfter(end)) {
-            throw new RuntimeException("Working Hours: 10:00 am to 8:30 pm");
+            throw new IllegalArgumentException("Working Hours: 10:00 am to 8:30 pm");
         }
 
         if(!appointmentRepository.isSlotAvailable(doctorId,dateTime)){
-            throw new RuntimeException("Slot already booked");
+            throw new IllegalStateException("Slot already booked");
         }
 
         Appointment appointment=new Appointment(doctorId,patientId, patient.getFullName(), dateTime);
@@ -64,11 +66,11 @@ public class Service {
     public Appointment.Status cancelAppointment(int doctorId, int patientId) {
         Doctor doctor = doctorRepository.getDoctor(doctorId);
         if (doctor == null) {
-            throw new IllegalArgumentException("Doctor does not exist.");
+            throw new NoSuchElementException("Doctor does not exist.");
         }
 
         if(!appointmentRepository.getAllAppointments().containsKey(doctorId)){
-            throw new RuntimeException("Doctor is not available");
+            throw new NoSuchElementException("Doctor is not available");
         }
         LocalDateTime dateTime=appointmentRepository.getAllAppointmentsOf(doctorId).get(patientId).getDateTime();
         if (!appointmentRepository.appointmentExists(doctorId, patientId, dateTime)){
@@ -82,14 +84,14 @@ public class Service {
         Doctor doctor=doctorRepository.getDoctor(doctorId);
 
         if(doctor==null) {
-            throw new RuntimeException("Doctor Not Found");
+            throw new NoSuchElementException("Doctor Not Found");
         }
         if (!appointmentRepository.appointmentExists(doctorId,  patientId, oldDateTime)) {
-            throw new RuntimeException("No scheduled appointment at " + oldDateTime);
+            throw new NoSuchElementException("No scheduled appointment at " + oldDateTime);
         }
 
         if (!appointmentRepository.isSlotAvailable(doctorId, newDateTime)) {
-            throw new RuntimeException("Slot already booked at " + newDateTime);
+            throw new IllegalStateException("Slot already booked at " + newDateTime);
         }
         cancelAppointment(doctorId,patientId);
         addAppointment(doctorId,newDateTime, patientId);
