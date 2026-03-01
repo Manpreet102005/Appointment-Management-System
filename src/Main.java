@@ -21,6 +21,7 @@ public class Main {
 
     public static void main(String[] args) {
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         Scanner sc = new Scanner(System.in);
         boolean running = true;
         while (running) {
@@ -73,7 +74,12 @@ public class Main {
                         System.out.print("Enter Patient ID: ");
                         int bookPatId = sc.nextInt();
 
-                        Appointment.Status bookingStatus=service.addAppointment(bookDocId, LocalDateTime.now(),bookPatId);
+                        System.out.println("Enter Appointment Time (yyyy-MM-dd HH:mm): ");
+                        String appDateTimeString = sc.nextLine();
+
+                        LocalDateTime appDateTime = LocalDateTime.parse(appDateTimeString, formatter);
+
+                        Appointment.Status bookingStatus=service.addAppointment(bookDocId, appDateTime,bookPatId);
                         if(bookingStatus.equals(Appointment.Status.BOOKED)) System.out.println("Appointment booked successfully!");
                         else System.out.println("Appointment Booking Failed. Try Again");
                         break;
@@ -100,7 +106,6 @@ public class Main {
                         System.out.println("Enter New Time (yyyy-MM-dd HH:mm): ");
                         String dateTimeString = sc.nextLine();
 
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                         LocalDateTime newDateTime = LocalDateTime.parse(dateTimeString, formatter);
 
                         boolean status = service.reScheduleAppointment(docId,
