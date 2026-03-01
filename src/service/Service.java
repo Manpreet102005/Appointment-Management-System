@@ -3,7 +3,9 @@ package service;
 import entities.Appointment;
 import entities.Doctor;
 import entities.Patient;
+import entities.Person;
 import repositries.*;
+import validations.PersonValidation;
 
 import java.time.LocalDateTime;
 
@@ -20,7 +22,10 @@ public class Service {
         this.doctorRepository=doctorRepository;
         this.patientRepository=patientRepository;
     }
-
+    public void addDoctor(int doctorId, String fullName, String specialization){
+        PersonValidation.validate(new Person(doctorId,fullName));
+        doctorRepository.addDoctor(new Doctor(doctorId,fullName,specialization));
+    }
     public  Appointment.Status addAppointment(int doctorId, LocalDateTime dateTime, int patientId){
         Patient patient = patientRepository.getPatient(patientId);
 

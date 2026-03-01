@@ -2,7 +2,6 @@ package repositries.impl;
 
 import entities.Doctor;
 import repositries.DoctorRepository;
-import validations.PersonValidation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,9 @@ public class InMemoryDoctorRepository implements DoctorRepository {
     ConcurrentHashMap<Integer, Doctor> doctors=new ConcurrentHashMap<>();
 
     public synchronized void addDoctor(Doctor doctor){
-        PersonValidation.validate(doctor);
+        if(doctors.containsKey(doctor.getId())){
+            throw  new RuntimeException("Doctor with this id already exists");
+        }
         doctors.put(doctor.getId(),doctor);
     }
     public synchronized void removeDoctor(int id){
