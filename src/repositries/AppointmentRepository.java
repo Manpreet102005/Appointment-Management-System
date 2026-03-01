@@ -19,6 +19,8 @@ public interface AppointmentRepository {
 
      ConcurrentHashMap.KeySetView<Integer, TreeMap<Integer, Appointment>> getAvailableDoctors();
 
-    boolean appointmentExists(int doctorId, int patientId, LocalDateTime oldDateTime);
+     boolean appointmentExists(int doctorId, int patientId, LocalDateTime oldDateTime);
+
+     Appointment getPatientAppointment(int doctorId, int patienId);
 
 }

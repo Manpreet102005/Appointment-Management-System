@@ -4,6 +4,7 @@ import entities.Appointment;
 import repositries.AppointmentRepository;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,10 +32,6 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         return Appointment.Status.BOOKED;
     }
     @Override
-    public TreeMap<Integer,Appointment> getAllAppointmentsOf(int doctorId){
-        return appointments.get(doctorId);
-    }
-    @Override
     public boolean isSlotAvailable(int doctorId, LocalDateTime dateTime){
         TreeMap<Integer,Appointment> schedule=appointments.get(doctorId);
         if(schedule == null) return true;
@@ -42,6 +39,13 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
             if(a.getDateTime().equals(dateTime)) return false;
         }
         return true;
+    }
+    @Override
+    public TreeMap<Integer,Appointment> getAllAppointmentsOf(int doctorId){
+        if(appointments.get(doctorId)==null){
+            throw new NoSuchElementException("No Appointments for Doctor with ID: "+doctorId);
+        }
+        return appointments.get(doctorId);
     }
     @Override
     public ConcurrentHashMap.KeySetView<Integer, TreeMap<Integer, Appointment>> getAvailableDoctors(){
@@ -60,5 +64,12 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         }
         return false;
     }
-
+    @Override
+    public Appointment getPatientAppointment(int doctorId, int patientId){
+         Appointment appointment= getAllAppointmentsOf(doctorId).get(patientId);
+         if(appointment==null){
+             throw new NoSuchElementException("No Appointment Exist");
+         }
+        return appointment;
+    }
 }

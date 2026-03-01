@@ -5,7 +5,9 @@ import repositries.*;
 import service.Service;
 import repositries.impl.*;
 
+import java.sql.SQLOutput;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 import java.util.TreeMap;
@@ -27,9 +29,10 @@ public class Main {
             System.out.println("2. Add Patient");
             System.out.println("3. Book Appointment");
             System.out.println("4. Cancel Appointment");
-            System.out.println("5. View All Appointments");
-            System.out.println("6. View All Patients");
-            System.out.println("7. View All Doctors");
+            System.out.println("5. Reschedule Appointment");
+            System.out.println("6. View All Appointments");
+            System.out.println("7. View All Patients");
+            System.out.println("8. View All Doctors");
             System.out.println("0. Exit");
             System.out.print("Enter choice: ");
 
@@ -88,16 +91,36 @@ public class Main {
                         break;
 
                     case 5:
+                        System.out.print("Enter Doctor ID: ");
+                        int docId = sc.nextInt();
+
+                        System.out.print("Enter Patient ID: ");
+                        int patId = sc.nextInt();
+
+                        System.out.println("Enter New Time (yyyy-MM-dd HH:mm): ");
+                        String dateTimeString = sc.nextLine();
+
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                        LocalDateTime newDateTime = LocalDateTime.parse(dateTimeString, formatter);
+
+                        boolean status = service.reScheduleAppointment(docId,
+                                patId,
+                                appointmentRepository.getPatientAppointment(docId,patId).getDateTime(),
+                                newDateTime);
+                        if(status) System.out.println("Appointment Rescheduled Successfully");
+                        else System.out.println("Appointment Reschedulation Failed. Try Again");
+
+                    case 6:
                         ConcurrentHashMap<Integer, TreeMap<Integer, Appointment>> allAppointments = appointmentRepository.getAllAppointments();
                         allAppointments.values().forEach(System.out::println);
                         break;
 
-                    case 6:
+                    case 7:
                         List<Patient> allPatients = patientRepository.getAllPatients();
                         allPatients.forEach(System.out::println);
                         break;
 
-                    case 7:
+                    case 8:
                         List<Doctor> allDoctors = doctorRepository.getAllDoctors();
                         allDoctors.forEach(System.out::println);
                         break;
