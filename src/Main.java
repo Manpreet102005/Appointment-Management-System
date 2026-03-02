@@ -103,8 +103,7 @@ public class Main {
                         sc.nextLine();
 
                         Appointment.Status cancellationStatus = service.cancelAppointment(cancelDocId, cancelPatId);
-                        if (cancellationStatus.equals(Appointment.Status.CANCELLED))
-                            System.out.println("Appointment cancelled successfully!");
+                        if (cancellationStatus.equals(Appointment.Status.CANCELLED)) System.out.println("Appointment cancelled successfully!");
                         else System.out.println("Appointment Cancellation Failed. Try Again");
                         break;
 
@@ -117,10 +116,14 @@ public class Main {
                         sc.nextLine();
 
                         System.out.print("Enter New Time (yyyy-MM-dd HH:mm): ");
-                        String dateTimeString = sc.nextLine();
+                        String newDateTimeString = sc.nextLine();
 
-                        LocalDateTime newDateTime = LocalDateTime.parse(dateTimeString, formatter);
-
+                        LocalDateTime newDateTime;
+                        try {
+                            newDateTime = LocalDateTime.parse(newDateTimeString, formatter);
+                        } catch (DateTimeParseException e) {
+                            throw new IllegalStateException("Invalid date-time format. Please use yyyy-MM-dd HH:mm");
+                        }
                         boolean status = service.reScheduleAppointment(docId,
                                 patId,
                                 appointmentRepository.getPatientAppointment(docId, patId).getDateTime(),
