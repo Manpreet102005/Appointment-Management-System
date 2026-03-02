@@ -5,7 +5,6 @@ import repositries.*;
 import service.Service;
 import repositries.impl.*;
 
-import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -15,10 +14,10 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Main {
-    private static DoctorRepository doctorRepository = new InMemoryDoctorRepository();
-    private static PatientRepository patientRepository = new InMemoryPatientRepository();
-    private static AppointmentRepository appointmentRepository = new InMemoryAppointmentRepository();
-    private static Service service = new Service(appointmentRepository, doctorRepository, patientRepository);
+    private final static DoctorRepository doctorRepository = new InMemoryDoctorRepository();
+    private final static PatientRepository patientRepository = new InMemoryPatientRepository();
+    private final static AppointmentRepository appointmentRepository = new InMemoryAppointmentRepository();
+    private final static Service service = new Service(appointmentRepository, doctorRepository, patientRepository);
 
     public static void main(String[] args) {
 
