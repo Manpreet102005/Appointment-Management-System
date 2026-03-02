@@ -94,8 +94,16 @@ public class Service {
         if (!appointmentRepository.isSlotAvailable(doctorId, newDateTime)) {
             throw new IllegalStateException("Slot already booked at " + newDateTime);
         }
-        cancelAppointment(doctorId,patientId);
-        addAppointment(doctorId,newDateTime, patientId);
+
+        Appointment.Status canStatus=cancelAppointment(doctorId,patientId);
+        if(!canStatus.equals(Appointment.Status.CANCELLED)) {
+            throw new RuntimeException("Appointment Reschedulation Failed. Try Again");
+        }
+
+        Appointment.Status bookStatus= addAppointment(doctorId,newDateTime, patientId);
+        if (!bookStatus.equals(Appointment.Status.BOOKED)){
+            throw new RuntimeException("Appointment Reschedulation Failed. Try Again");
+        }
         return true;
     }
 }
