@@ -129,7 +129,7 @@ public class Main {
                                 appointmentRepository.getPatientAppointment(docId, patId).getDateTime(),
                                 newDateTime);
                         if (status) System.out.println("Appointment Rescheduled Successfully");
-
+                        break;
 
                     case 6:
                         ConcurrentHashMap<Integer, TreeMap<Integer, Appointment>> allAppointments = appointmentRepository.getAllAppointments();
