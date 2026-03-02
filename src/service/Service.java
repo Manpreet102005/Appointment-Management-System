@@ -70,8 +70,9 @@ public class Service {
         }
 
         if(!appointmentRepository.getAllAppointments().containsKey(doctorId)){
-            throw new NoSuchElementException("Doctor is not available");
+            throw new NoSuchElementException("No Appointments found");
         }
+
         LocalDateTime dateTime=appointmentRepository.getAllAppointmentsOf(doctorId).get(patientId).getDateTime();
         if (!appointmentRepository.appointmentExists(doctorId, patientId, dateTime)){
             throw new RuntimeException("No Appointment exist with these details");
