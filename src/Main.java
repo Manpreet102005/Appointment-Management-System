@@ -8,6 +8,7 @@ import repositries.impl.*;
 import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.TreeMap;
@@ -52,7 +53,7 @@ public class Main {
                         System.out.print("Enter Specialization: ");
                         String dSpec = sc.nextLine();
 
-                        service.addDoctor(dId,dName,dSpec);
+                        service.addDoctor(dId, dName, dSpec);
                         System.out.println("Doctor Added successfully!");
                         break;
 
@@ -79,14 +80,17 @@ public class Main {
                         System.out.print("Enter Appointment Time (yyyy-MM-dd HH:mm): ");
                         String appDateTimeString = sc.nextLine();
 
-                        LocalDateTime appDateTime = LocalDateTime.parse(appDateTimeString, formatter);
-                        if(appDateTime.isBefore(LocalDateTime.now())){
-                            throw new
+                        LocalDateTime appDateTime;
+                        try {
+                            appDateTime = LocalDateTime.parse(appDateTimeString, formatter);
+                        } catch (DateTimeParseException e) {
+                            throw new IllegalStateException("Invalid date-time format. Please use yyyy-MM-dd HH:mm");
                         }
 
-                        Appointment.Status bookingStatus=service.addAppointment(bookDocId, appDateTime,bookPatId);
+                        Appointment.Status bookingStatus = service.addAppointment(bookDocId, appDateTime, bookPatId);
 
-                        if(bookingStatus.equals(Appointment.Status.BOOKED)) System.out.println("Appointment booked successfully!");
+                        if (bookingStatus.equals(Appointment.Status.BOOKED))
+                            System.out.println("Appointment booked successfully!");
                         else System.out.println("Appointment Booking Failed. Try Again");
                         break;
 
@@ -98,8 +102,9 @@ public class Main {
                         int cancelPatId = sc.nextInt();
                         sc.nextLine();
 
-                        Appointment.Status cancellationStatus =service.cancelAppointment(cancelDocId, cancelPatId);
-                        if(cancellationStatus.equals(Appointment.Status.CANCELLED)) System.out.println("Appointment cancelled successfully!");
+                        Appointment.Status cancellationStatus = service.cancelAppointment(cancelDocId, cancelPatId);
+                        if (cancellationStatus.equals(Appointment.Status.CANCELLED))
+                            System.out.println("Appointment cancelled successfully!");
                         else System.out.println("Appointment Cancellation Failed. Try Again");
                         break;
 
@@ -118,9 +123,9 @@ public class Main {
 
                         boolean status = service.reScheduleAppointment(docId,
                                 patId,
-                                appointmentRepository.getPatientAppointment(docId,patId).getDateTime(),
+                                appointmentRepository.getPatientAppointment(docId, patId).getDateTime(),
                                 newDateTime);
-                        if(status) System.out.println("Appointment Rescheduled Successfully");
+                        if (status) System.out.println("Appointment Rescheduled Successfully");
                         else System.out.println("Appointment Reschedulation Failed. Try Again");
 
                     case 6:
