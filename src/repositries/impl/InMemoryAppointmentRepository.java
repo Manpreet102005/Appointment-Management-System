@@ -17,9 +17,6 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
 
         synchronized (schedule){
             appointment.setStatus(Appointment.Status.BOOKED);
-            if(schedule.containsKey(appointment.getPatientId())){
-                throw new IllegalStateException("Appointment already exists with this id");
-            }
             schedule.put(appointment.getPatientId(),appointment);
         }
     }
