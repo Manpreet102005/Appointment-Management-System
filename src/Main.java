@@ -124,6 +124,7 @@ public class Main {
                         } catch (DateTimeParseException e) {
                             throw new IllegalStateException("Invalid date-time format. Please use yyyy-MM-dd HH:mm");
                         }
+
                         boolean status = service.reScheduleAppointment(docId,
                                 patId,
                                 appointmentRepository.getPatientAppointment(docId, patId).getDateTime(),
@@ -133,17 +134,17 @@ public class Main {
 
                     case 6:
                         ConcurrentHashMap<Integer, TreeMap<Integer, Appointment>> allAppointments = appointmentRepository.getAllAppointments();
-                        for(int docId:allAppointments.keySet()){
+                        for(int key:allAppointments.keySet()){
                             System.out.println("Doctor Details:");
                             System.out.println("_______________");
                             System.out.printf("ID: %s Name: %s | Specialization: %s",
-                                    docId,
-                                    doctorRepository.getDoctor(docId).getFullName(),
-                                    doctorRepository.getDoctor(docId).getSpecialization()
+                                    key,
+                                    doctorRepository.getDoctor(key).getFullName(),
+                                    doctorRepository.getDoctor(key).getSpecialization()
                             );
 
                             System.out.print("Patient ID  |  Patient Name  |  Appointment Time  |  Status");
-                            TreeMap<Integer,Appointment> schedule=allAppointments.get(docId);
+                            TreeMap<Integer,Appointment> schedule=allAppointments.get(key);
                             for (int id:schedule.keySet()){
                                 Appointment appointment= schedule.get(id);
                                 System.out.printf("%-10d  |  %-10s  |  %-10s  |  %-10s",
