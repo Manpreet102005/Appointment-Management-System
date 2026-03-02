@@ -134,19 +134,19 @@ public class Main {
                     case 6:
                         ConcurrentHashMap<Integer, TreeMap<Integer, Appointment>> allAppointments = appointmentRepository.getAllAppointments();
                         for(int key:allAppointments.keySet()){
-                            System.out.println("Doctor Details:");
-                            System.out.println("_______________");
-                            System.out.printf("ID: %s Name: %s | Specialization: %s\n",
-                                    key,
-                                    doctorRepository.getDoctor(key).getFullName(),
-                                    doctorRepository.getDoctor(key).getSpecialization()
+
+                            System.out.println("\nDoctor Details:");
+                            System.out.println("Id: "+key+
+                                    " | Name: "+doctorRepository.getDoctor(key).getFullName()+
+                                    " | Specialization: "+doctorRepository.getDoctor(key).getSpecialization()
                             );
 
-                            System.out.println("Patient ID  |  Patient Name  |  Appointment Time  |  Status");
+                            System.out.println();
+                            System.out.printf("%-11s  |  %-20s  |  %-23s  |  %-10s\n","Patient Id","Patient Name","Appointment Date/Time","Status");
                             TreeMap<Integer,Appointment> schedule=allAppointments.get(key);
                             for (int id:schedule.keySet()){
                                 Appointment appointment= schedule.get(id);
-                                System.out.printf("%-10d  |  %-10s  |  %-10s  |  %-10s\n",
+                                System.out.printf("%-11d  |  %-20s  |  %-23s  |  %-10s\n",
                                         id,
                                         appointment.getPatientName(),
                                         appointment.getDateTime().format(formatter),
