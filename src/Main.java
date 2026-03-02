@@ -133,7 +133,27 @@ public class Main {
 
                     case 6:
                         ConcurrentHashMap<Integer, TreeMap<Integer, Appointment>> allAppointments = appointmentRepository.getAllAppointments();
-                        allAppointments.values().forEach(System.out::println);
+                        for(int docId:allAppointments.keySet()){
+                            System.out.println("Doctor Details:");
+                            System.out.println("_______________");
+                            System.out.printf("ID: %s Name: %s | Specialization: %s",
+                                    docId,
+                                    doctorRepository.getDoctor(docId).getFullName(),
+                                    doctorRepository.getDoctor(docId).getSpecialization()
+                            );
+
+                            System.out.print("Patient ID  |  Patient Name  |  Appointment Time  |  Status");
+                            TreeMap<Integer,Appointment> schedule=allAppointments.get(docId);
+                            for (int id:schedule.keySet()){
+                                Appointment appointment= schedule.get(id);
+                                System.out.printf("%-10d  |  %-10s  |  %-10s  |  %-10s",
+                                        id,
+                                        appointment.getPatientName(),
+                                        appointment.getDateTime().format(formatter),
+                                        appointment.getStatus()
+                                );
+                            }
+                        }
                         break;
 
                     case 7:
