@@ -26,4 +26,7 @@ public class InMemoryPatientRepository implements PatientRepository {
         }
         return allPatients;
     }
+    public void removePatient(int id){
+        patients.remove(id);
+    }
 }
