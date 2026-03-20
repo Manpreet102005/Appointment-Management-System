@@ -1,33 +1,34 @@
-CREATE DATABASE appointment_db;
+CREATE DATABASE IF NOT EXISTS appointment_db;
 use appointment_db;
 
 CREATE TABLE person (
-                        id int primary key ,
-                        fullname varchar(20) not null
+       id int primary key ,
+       fullname varchar(20) not null
 );
 
 CREATE TABLE patient(
-                        id int primary key,
-                        fullname varchar(20) not null
+       id int primary key,
+       fullname varchar(20) not null
 );
 
-create table doctor(
+CREATE TABLE doctor(
                        doctor_id int primary key ,
                        specialisation varchar(20)
 );
+
 CREATE TABLE appointment(
-                            appointment_id int primary key auto_increment,
-                            doctor_id int ,
-                            patient_id int not null ,
-                            date_time datetime ,
-                            status varchar(9) check (status in('BOOKED','CANCELLED')),
-                            foreign key (patient_id) references patient(id) on delete cascade ,
-                            foreign key (doctor_id) references doctor(doctor_id) on delete set null
+        appointment_id int primary key auto_increment,
+        doctor_id int ,
+        patient_id int not null ,
+        date_time datetime ,
+        status varchar(9) check (status in('BOOKED','CANCELLED')),
+        foreign key (patient_id) references patient(id) on delete cascade ,
+        foreign key (doctor_id) references doctor(doctor_id) on delete set null
 );
 
 CREATE Table authorised_users(
-                                 username varchar(20) primary key ,
-                                 password varchar(20)
+        username varchar(20) primary key ,
+        password varchar(20)
 );
 
 
