@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS appointment(
         foreign key (doctor_id) references doctor(doctor_id) on delete set null
 );
 
+
 CREATE TABLE IF NOT EXISTS authorised_users(
         username varchar(20) primary key ,
         password varchar(20)
