@@ -26,7 +26,7 @@ public class DBPatientRepository implements PatientRepository {
         String query = "SELECT * FROM patients";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
-            ResultSet rs = ps.executeQuery(query);
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 list.add(new Patient(rs.getInt("id"), rs.getString("fullname")));
             }
@@ -44,7 +44,7 @@ public class DBPatientRepository implements PatientRepository {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1,id);
-            ResultSet rs = ps.executeQuery(query);
+            ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 patient = new Patient(rs.getInt("id"), rs.getString("fullname"));
             }
@@ -54,5 +54,19 @@ public class DBPatientRepository implements PatientRepository {
             System.out.println("Msg  : " + e.getMessage());
         }
         return patient;
+    }
+    public void removePatient(int id){
+        String query= "DELETE FROM patients WHERE id=?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setInt(1,id);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("State: " + e.getSQLState());
+            System.out.println("Code : " + e.getErrorCode());
+            System.out.println("Msg  : " + e.getMessage());
+        }
     }
 }
