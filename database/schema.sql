@@ -1,36 +1,28 @@
 CREATE DATABASE IF NOT EXISTS appointment_db;
-use appointment_db;
+USE appointment_db;
 
-CREATE TABLE  IF NOT EXISTS person (
-       id int primary key ,
-       fullname varchar(20) not null
+CREATE TABLE IF NOT EXISTS patient (
+     id INT PRIMARY KEY AUTO_INCREMENT,
+     fullname VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS patient(
-       id int primary key,
-       fullname varchar(20) not null
+CREATE TABLE IF NOT EXISTS doctor (
+    doctor_id INT PRIMARY KEY AUTO_INCREMENT,
+    specialisation VARCHAR(30)
 );
 
-CREATE TABLE IF NOT EXISTS doctor(
-                       doctor_id int primary key ,
-                       specialisation varchar(20)
+CREATE TABLE IF NOT EXISTS appointment (
+    appointment_id INT PRIMARY KEY AUTO_INCREMENT,
+    doctor_id INT,
+    patient_id INT NOT NULL,
+    patient_name VARCHAR(50) NOT NULL,
+    date_time DATETIME,
+    status VARCHAR(9) CHECK (status IN ('BOOKED', 'CANCELLED')),
+    FOREIGN KEY (patient_id) REFERENCES patient(id) ON DELETE CASCADE,
+    FOREIGN KEY (doctor_id)  REFERENCES doctor(doctor_id) ON DELETE SET NULL
 );
 
-CREATE TABLE IF NOT EXISTS appointment(
-        appointment_id int primary key auto_increment,
-        doctor_id int ,
-        patient_id int not null ,
-        date_time datetime ,
-        status varchar(9) check (status in('BOOKED','CANCELLED')),
-        foreign key (patient_id) references patient(id) on delete cascade ,
-        foreign key (doctor_id) references doctor(doctor_id) on delete set null
+CREATE TABLE IF NOT EXISTS authorised_users (
+    username VARCHAR(20) PRIMARY KEY,
+    password VARCHAR(20)
 );
-
-
-CREATE TABLE IF NOT EXISTS authorised_users(
-        username varchar(20) primary key ,
-        password varchar(20)
-);
-
-
-
