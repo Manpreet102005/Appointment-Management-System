@@ -1,11 +1,8 @@
 package repositries.impl;
 
-import com.mysql.cj.jdbc.exceptions.PacketTooBigException;
 import entities.Patient;
 import repositries.PatientRepository;
 import util.DatabaseConnection;
-
-import java.security.PrivilegedActionException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
