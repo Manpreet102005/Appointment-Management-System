@@ -27,7 +27,18 @@ public class DBDoctorRepository implements DoctorRepository {
         }
     }
     public void removeDoctor(int id){
+        String query= "DELETE FROM doctors WHERE id=?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
 
+            ps.setInt(1,id);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("State: " + e.getSQLState());
+            System.out.println("Code : " + e.getErrorCode());
+            System.out.println("Msg  : " + e.getMessage());
+        }
     }
     public Doctor getDoctor(int id){
         String query = "SELECT * FROM doctors WHERE id=?";
@@ -35,7 +46,7 @@ public class DBDoctorRepository implements DoctorRepository {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1,id);
-            ResultSet rs = ps.executeQuery(query);
+            ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 doctor = new Doctor(rs.getInt("id"),
                         rs.getString("fullname"),
@@ -56,7 +67,7 @@ public class DBDoctorRepository implements DoctorRepository {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
 
-            ResultSet rs = ps.executeQuery(query);
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 doctor = new Doctor(rs.getInt("id"),
                         rs.getString("fullname"),
