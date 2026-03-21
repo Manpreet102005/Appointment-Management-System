@@ -1,5 +1,6 @@
 package repositries.impl;
 
+import com.mysql.cj.jdbc.result.UpdatableResultSet;
 import entities.Appointment;
 import repositries.AppointmentRepository;
 import util.DatabaseConnection;
@@ -64,13 +65,29 @@ public class DBAppointmentRepository implements AppointmentRepository {
         return false;
     }
 
-    public TreeMap<Integer, Appointment> getAllAppointmentsOf(int doctorId);
+    public TreeMap<Integer, Appointment> getAllAppointmentsOf(int doctorId){
+        TreeMap<Integer,Appointment> allAppointments= new TreeMap<>();
+        String query="SELECT a.doctor_id,a.patient_id,p.patient_name,a.date_time,a.status FROM patients p INNER JOIN appointments a on p.id=a.patient_id WHERE doctor_id= ?";
+        try(Connection conn= DatabaseConnection.getConnection();
+        PreparedStatement ps= conn.prepareStatement(query)){
+            ps.setInt(1,doctorId);
+            ResultSet rs=ps.executeQuery();
 
-    public ConcurrentHashMap<Integer,TreeMap<Integer, Appointment>> getAllAppointments();
-
-    public ConcurrentHashMap.KeySetView<Integer, TreeMap<Integer, Appointment>> getAvailableDoctors();
-
-    public boolean appointmentExists(int doctorId, int patientId, LocalDateTime oldDateTime);
-
-    public Appointment getPatientAppointment(int doctorId, int patienId);
+            while(rs.next()) {
+                allAppointments.put(rs.getInt("doctor_id"),
+                        new Appointment(
+                                rs.getInt("doctor_id"),
+                                rs.getInt("patient_id"),
+                                rs.getString("patient_name"),
+                                rs.getTimestamp("date_time").toLocalDateTime()
+                        )
+                );
+            }
+        }catch(SQLException e){
+            System.out.println("State: " + e.getSQLState());
+            System.out.println("Code : " + e.getErrorCode());
+            System.out.println("Msg  : " + e.getMessage());
+        }
+        return allAppointments;
+    }
 }
