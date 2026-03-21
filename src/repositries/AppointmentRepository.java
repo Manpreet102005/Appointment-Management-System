@@ -19,7 +19,7 @@ public interface AppointmentRepository {
 
      List<Appointment> getAllAppointments();
 
-     boolean appointmentExists(int doctorId, int patientId, LocalDateTime oldDateTime);
+     boolean appointmentExists(int doctorId, int patientId, LocalDateTime dateTime);
 
      boolean hasAppointmentOnDay(int doctorId, int patientId, LocalDate date);
 
