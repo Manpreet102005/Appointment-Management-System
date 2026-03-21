@@ -8,6 +8,7 @@ import util.DatabaseConnection;
 import java.awt.*;
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -67,22 +68,29 @@ public class DBAppointmentRepository implements AppointmentRepository {
 
     public TreeMap<Integer, Appointment> getAllAppointmentsOf(int doctorId){
         TreeMap<Integer,Appointment> allAppointments= new TreeMap<>();
-        String query="SELECT a.doctor_id,a.patient_id,p.patient_name,a.date_time,a.status FROM patients p INNER JOIN appointments a on p.id=a.patient_id WHERE doctor_id= ?";
+        String query="SELECT a.appointment_id,a.doctor_id,a.patient_id,p.patient_name,a.date_time,a.status FROM patients p INNER JOIN appointments a on p.id=a.patient_id WHERE doctor_id= ?";
         try(Connection conn= DatabaseConnection.getConnection();
         PreparedStatement ps= conn.prepareStatement(query)){
             ps.setInt(1,doctorId);
             ResultSet rs=ps.executeQuery();
 
             while(rs.next()) {
-                allAppointments.put(rs.getInt("doctor_id"),
+                allAppointments.put(rs.getInt("appointment_id"),
                         new Appointment(
+                                rs.getInt("appointment_id"),
                                 rs.getInt("doctor_id"),
                                 rs.getInt("patient_id"),
                                 rs.getString("patient_name"),
-                                rs.getTimestamp("date_time").toLocalDateTime()
+                                rs.getTimestamp("date_time").toLocalDateTime(),
+                                Appointment.Status.valueOf(rs.getString("status"))
                         )
                 );
             }
+
+            if (allAppointments.isEmpty()) {
+                throw new NoSuchElementException("No Appointments found for Doctor ID: " + doctorId);
+            }
+
         }catch(SQLException e){
             System.out.println("State: " + e.getSQLState());
             System.out.println("Code : " + e.getErrorCode());
