@@ -45,8 +45,24 @@ public class DBAppointmentRepository implements AppointmentRepository {
         }
         return Appointment.Status.CANCELLED;
     }
-    /*
-    public boolean isSlotAvailable(int doctorId, LocalDateTime dateTime);
+
+    public boolean isSlotAvailable(int doctorId, LocalDateTime dateTime){
+        String query = "SELECT COUNT(*) AS count FROM appointments WHERE doctor_id=? AND date_time = ?";
+        try(Connection conn = DatabaseConnection.getConnection();
+        PreparedStatement ps= conn.prepareStatement(query)){
+            ps.setInt(1,doctorId);
+            ps.setTimestamp(2,Timestamp.valueOf(dateTime));
+            ResultSet rs=ps.executeQuery();
+            if(rs.next()){
+                if(rs.getInt("count")==0) return true;
+            }
+        }catch(SQLException e){
+            System.out.println("State: " + e.getSQLState());
+            System.out.println("Code : " + e.getErrorCode());
+            System.out.println("Msg  : " + e.getMessage());
+        }
+        return false;
+    }
 
     public TreeMap<Integer, Appointment> getAllAppointmentsOf(int doctorId);
 
@@ -56,5 +72,5 @@ public class DBAppointmentRepository implements AppointmentRepository {
 
     public boolean appointmentExists(int doctorId, int patientId, LocalDateTime oldDateTime);
 
-    public Appointment getPatientAppointment(int doctorId, int patienId);*/
+    public Appointment getPatientAppointment(int doctorId, int patienId);
 }
