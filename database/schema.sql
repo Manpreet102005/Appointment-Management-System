@@ -16,10 +16,10 @@ CREATE TABLE IF NOT EXISTS appointments (
     appointment_id INT PRIMARY KEY AUTO_INCREMENT,
     doctor_id INT NOT NULL,
     patient_id INT NOT NULL,
-    date_time DATETIME,
+    date_time DATETIME NOT NULL,
     status VARCHAR(9) CHECK (status IN ('BOOKED', 'CANCELLED')),
-    FOREIGN KEY (patient_id) REFERENCES patient(id) ON DELETE CASCADE,
-    FOREIGN KEY (doctor_id)  REFERENCES doctor(doctor_id) ON DELETE CASCADE
+    FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE,
+    FOREIGN KEY (doctor_id)  REFERENCES doctors(doctor_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS authorised_users (
