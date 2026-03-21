@@ -5,8 +5,6 @@ import entities.Appointment;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 public interface AppointmentRepository {
      void addAppointment(Appointment appointment);
