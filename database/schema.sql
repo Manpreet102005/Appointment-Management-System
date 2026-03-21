@@ -1,17 +1,18 @@
 CREATE DATABASE IF NOT EXISTS appointment_db;
 USE appointment_db;
 
-CREATE TABLE IF NOT EXISTS patient (
+CREATE TABLE IF NOT EXISTS patients (
      id INT PRIMARY KEY AUTO_INCREMENT,
-     fullname VARCHAR(50) NOT NULL
+     patient_name VARCHAR(20) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS doctor (
+CREATE TABLE IF NOT EXISTS doctors (
     doctor_id INT PRIMARY KEY AUTO_INCREMENT,
-    specialisation VARCHAR(30)
+    doctor_name VARCHAR(20) NOT NULL ,
+    specialisation VARCHAR(20)
 );
 
-CREATE TABLE IF NOT EXISTS appointment (
+CREATE TABLE IF NOT EXISTS appointments (
     appointment_id INT PRIMARY KEY AUTO_INCREMENT,
     doctor_id INT NOT NULL,
     patient_id INT NOT NULL,
@@ -23,5 +24,5 @@ CREATE TABLE IF NOT EXISTS appointment (
 
 CREATE TABLE IF NOT EXISTS authorised_users (
     username VARCHAR(20) PRIMARY KEY,
-    password VARCHAR(20)
+    password VARCHAR(20) NOT NULL
 );
