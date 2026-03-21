@@ -2,6 +2,7 @@ package repositries;
 
 import entities.Appointment;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,6 +21,8 @@ public interface AppointmentRepository {
      ConcurrentHashMap.KeySetView<Integer, TreeMap<Integer, Appointment>> getAvailableDoctors();
 
      boolean appointmentExists(int doctorId, int patientId, LocalDateTime oldDateTime);
+
+     boolean hasAppointmentOnDay(int doctorId, int patientId, LocalDate date);
 
      Appointment getPatientAppointment(int doctorId, int patienId);
 

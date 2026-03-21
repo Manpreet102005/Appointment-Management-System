@@ -3,6 +3,7 @@ package repositries.impl;
 import entities.Appointment;
 import repositries.AppointmentRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.TreeMap;
@@ -61,6 +62,16 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         if(appointments==null) return false;
         for(Integer a: appointments.keySet()){
             if(a.equals(patientId) && appointments.get(patientId).getDateTime().equals(dateTime)) return true;
+        }
+        return false;
+    }
+    @Override
+    public boolean hasAppointmentOnDay(int doctorId, int patientId, LocalDate date) {
+        TreeMap<Integer, Appointment> schedule = appointments.get(doctorId);
+        if (schedule == null) return false;
+        for (Appointment a : schedule.values()) {
+            if (a.getPatientId() == patientId
+                    && a.getDateTime().toLocalDate().equals(date)) return true;
         }
         return false;
     }
