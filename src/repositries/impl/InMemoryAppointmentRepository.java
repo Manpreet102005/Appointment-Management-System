@@ -5,6 +5,8 @@ import repositries.AppointmentRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,28 +44,29 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         return true;
     }
     @Override
-    public TreeMap<Integer,Appointment> getAllAppointmentsOf(int doctorId){
-        if(appointments.get(doctorId)==null){
-            throw new NoSuchElementException("No Appointments for Doctor with ID: "+doctorId);
+    public List<Appointment> getAllAppointmentsOf(int doctorId){
+        List<Appointment> result = new ArrayList<>();
+        TreeMap<Integer, Appointment> doctorMap = appointments.get(doctorId);
+        if(doctorMap == null) return result;
+        result.addAll(doctorMap.values());
+        return result;
+    }
+
+    @Override
+    public List<Appointment> getAllAppointments() {
+        List<Appointment> result = new ArrayList<>();
+        for(TreeMap<Integer, Appointment> doctorMap : appointments.values()) {
+            result.addAll(doctorMap.values());
         }
-        return appointments.get(doctorId);
-    }
-    @Override
-    public ConcurrentHashMap.KeySetView<Integer, TreeMap<Integer, Appointment>> getAvailableDoctors(){
-        return appointments.keySet();
-    }
-    @Override
-    public ConcurrentHashMap<Integer,TreeMap<Integer, Appointment>> getAllAppointments(){
-        return appointments;
+        return result;
     }
     @Override
     public boolean appointmentExists(int doctorId, int patientId, LocalDateTime dateTime) {
-        TreeMap<Integer,Appointment> appointments=getAllAppointmentsOf(doctorId);
-        if(appointments==null) return false;
-        for(Integer a: appointments.keySet()){
-            if(a.equals(patientId) && appointments.get(patientId).getDateTime().equals(dateTime)) return true;
-        }
-        return false;
+        TreeMap<Integer,Appointment> doctorMap = appointments.get(doctorId);
+        if(doctorMap == null) return false;
+        Appointment a = doctorMap.get(patientId);
+        if(a == null) return false;
+        return a.getDateTime().equals(dateTime);
     }
     @Override
     public boolean hasAppointmentOnDay(int doctorId, int patientId, LocalDate date) {

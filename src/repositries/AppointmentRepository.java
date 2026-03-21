@@ -4,6 +4,7 @@ import entities.Appointment;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,11 +15,9 @@ public interface AppointmentRepository {
 
      boolean isSlotAvailable(int doctorId, LocalDateTime dateTime);
 
-     TreeMap<Integer, Appointment> getAllAppointmentsOf(int doctorId);
+     List<Appointment> getAllAppointmentsOf(int doctorId);
 
-     ConcurrentHashMap<Integer,TreeMap<Integer, Appointment>> getAllAppointments();
-
-     ConcurrentHashMap.KeySetView<Integer, TreeMap<Integer, Appointment>> getAvailableDoctors();
+     List<Appointment> getAllAppointments();
 
      boolean appointmentExists(int doctorId, int patientId, LocalDateTime oldDateTime);
 

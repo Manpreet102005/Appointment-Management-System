@@ -73,7 +73,7 @@ public class Service {
             throw new NoSuchElementException("Doctor does not exist.");
         }
 
-        if(!appointmentRepository.getAllAppointments().containsKey(doctorId)){
+        if(!appointmentRepository.getAllAppointments().contains(doctorId)){
             throw new NoSuchElementException("No Appointments found");
         }
 
