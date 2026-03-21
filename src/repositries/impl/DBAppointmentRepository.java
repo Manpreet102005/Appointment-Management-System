@@ -7,7 +7,10 @@ import util.DatabaseConnection;
 
 import java.awt.*;
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -65,22 +68,27 @@ public class DBAppointmentRepository implements AppointmentRepository {
         return false;
     }
 
-    public TreeMap<Integer, Appointment> getAllAppointmentsOf(int doctorId){
-        TreeMap<Integer,Appointment> allAppointments= new TreeMap<>();
-        String query="SELECT a.doctor_id,a.patient_id,p.patient_name,a.date_time,a.status FROM patients p INNER JOIN appointments a on p.id=a.patient_id WHERE doctor_id= ?";
+    public ArrayList<Appointment> getAllAppointmentsOf(int doctorId){
+        ArrayList<Appointment> allAppointments= new ArrayList<>();
+        String query= """
+                SELECT a.doctor_id,a.patient_id,
+                p.patient_name,a.date_time,
+                a.status FROM patients p 
+                INNER JOIN appointments a on p.id=a.patient_id 
+                WHERE doctor_id= ? 
+                ORDER BY a.date_time
+                """;
         try(Connection conn= DatabaseConnection.getConnection();
         PreparedStatement ps= conn.prepareStatement(query)){
             ps.setInt(1,doctorId);
             ResultSet rs=ps.executeQuery();
 
             while(rs.next()) {
-                allAppointments.put(rs.getInt("doctor_id"),
-                        new Appointment(
-                                rs.getInt("doctor_id"),
-                                rs.getInt("patient_id"),
-                                rs.getString("patient_name"),
-                                rs.getTimestamp("date_time").toLocalDateTime()
-                        )
+                allAppointments.add(new Appointment(rs.getInt("doctor_id"),
+                        rs.getInt("patient_id"),
+                        rs.getString("patient_name"),
+                        rs.getTimestamp("date_time").toLocalDateTime(),
+                        Appointment.Status.valueOf(rs.getString("status")))
                 );
             }
         }catch(SQLException e){
@@ -89,5 +97,25 @@ public class DBAppointmentRepository implements AppointmentRepository {
             System.out.println("Msg  : " + e.getMessage());
         }
         return allAppointments;
+    }
+
+    @Override
+    public List<Appointment> getAllAppointments() {
+        return List.of();
+    }
+
+    @Override
+    public boolean appointmentExists(int doctorId, int patientId, LocalDateTime oldDateTime) {
+        return false;
+    }
+
+    @Override
+    public boolean hasAppointmentOnDay(int doctorId, int patientId, LocalDate date) {
+        return false;
+    }
+
+    @Override
+    public Appointment getPatientAppointment(int doctorId, int patienId) {
+        return null;
     }
 }

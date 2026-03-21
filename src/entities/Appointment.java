@@ -19,6 +19,13 @@ public class Appointment {
         this.dateTime=dateTime;
         this.status=Status.BOOKED;
     }
+    public Appointment(int doctorId,int patientId,String patientName,LocalDateTime dateTime, Status status){
+        this.doctorId=doctorId;
+        this.patientId=patientId;
+        this.patientName=patientName;
+        this.dateTime=dateTime;
+        this.status=status;
+    }
 
     public int getPatientId(){
         return patientId;
