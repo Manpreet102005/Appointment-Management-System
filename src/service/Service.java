@@ -57,7 +57,7 @@ public class Service {
             throw new IllegalStateException("Slot already booked");
         }
 
-        Appointment appointment=new Appointment(doctorId,patientId, patient.getFullName(), dateTime);
+        Appointment appointment=new Appointment(doctorId,patientId, patient.getFullName(), dateTime, Appointment.Status.BOOKED);
 
         appointmentRepository.addAppointment(appointment);
         return appointment.getStatus();
