@@ -6,20 +6,33 @@ public class Appointment {
     public enum Status{
         BOOKED, CANCELLED;
     }
+    private final int appointmentId;
     private final int doctorId;
     private final int patientId;
     private final String patientName;
     private final LocalDateTime dateTime;
     private Status status;
 
-    public Appointment(int doctorId,int patientId,String patientName,LocalDateTime dateTime){
+    private static int counter=1;
+    public Appointment(int doctorId,int patientId,String patientName,LocalDateTime dateTime, Status status){
+        this.appointmentId=counter++;
         this.doctorId=doctorId;
         this.patientId=patientId;
         this.patientName=patientName;
         this.dateTime=dateTime;
-        this.status=Status.BOOKED;
+        this.status=status;
+    }
+    public Appointment(int appointmentId,int doctorId,int patientId,String patientName,LocalDateTime dateTime, Status status){
+        this.appointmentId=appointmentId;
+        this.doctorId=doctorId;
+        this.patientId=patientId;
+        this.patientName=patientName;
+        this.dateTime=dateTime;
+        this.status=status;
     }
 
+
+    public int getAppointmentId(){ return appointmentId;}
     public int getPatientId(){
         return patientId;
     }
@@ -41,9 +54,10 @@ public class Appointment {
     @Override
     public String toString() {
         return "Appointment{" +
-                "doctorId=" + doctorId +
+                "appointmentId=" + appointmentId +
+                ", doctorId=" + doctorId +
                 ", patientId=" + patientId +
-                ", patientName='" + patientName + '\'' +
+                ", patientName='" + patientName +
                 ", dateTime=" + dateTime +
                 ", status=" + status +
                 '}';
