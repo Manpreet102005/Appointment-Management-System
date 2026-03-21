@@ -1,23 +1,21 @@
 package repositries.impl;
 
-import com.mysql.cj.jdbc.result.UpdatableResultSet;
+
 import entities.Appointment;
 import repositries.AppointmentRepository;
 import util.DatabaseConnection;
-
 import java.awt.*;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
+
 
 public class DBAppointmentRepository implements AppointmentRepository {
     @Override
     public void addAppointment(Appointment appointment){
-        String query = "INSERT INTO appointment (doctor_id, patient_id, date_time, status) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO appointments (doctor_id, patient_id, date_time, status) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
@@ -27,7 +25,7 @@ public class DBAppointmentRepository implements AppointmentRepository {
             ps.setTimestamp(3, Timestamp.valueOf(appointment.getDateTime()));
             ps.setString(4, appointment.getStatus().name());
             ps.executeUpdate();
-
+            appointment.setStatus(Appointment.Status.BOOKED);
         } catch (SQLException e) {
             System.out.println("State: " + e.getSQLState());
             System.out.println("Code : " + e.getErrorCode());
@@ -101,21 +99,90 @@ public class DBAppointmentRepository implements AppointmentRepository {
 
     @Override
     public List<Appointment> getAllAppointments() {
-        return List.of();
+        List<Appointment> allAppointments = new ArrayList<>();
+        String query= """
+                SELECT a.doctor_id,a.patient_id,
+                p.patient_name,a.date_time,
+                a.status FROM patients p 
+                INNER JOIN appointments a on p.id=a.patient_id 
+                ORDER BY a.date_time
+                """;
+        try(Connection conn= DatabaseConnection.getConnection();
+            PreparedStatement ps= conn.prepareStatement(query)){
+            ResultSet rs=ps.executeQuery();
+
+            while(rs.next()) {
+                allAppointments.add(new Appointment(rs.getInt("doctor_id"),
+                        rs.getInt("patient_id"),
+                        rs.getString("patient_name"),
+                        rs.getTimestamp("date_time").toLocalDateTime(),
+                        Appointment.Status.valueOf(rs.getString("status")))
+                );
+            }
+        }catch(SQLException e){
+            System.out.println("State: " + e.getSQLState());
+            System.out.println("Code : " + e.getErrorCode());
+            System.out.println("Msg  : " + e.getMessage());
+        }
+        return allAppointments;
     }
 
     @Override
-    public boolean appointmentExists(int doctorId, int patientId, LocalDateTime oldDateTime) {
+    public boolean appointmentExists(int doctorId, int patientId, LocalDateTime dateTime) {
+        String query = "SELECT COUNT(*) FROM appointments WHERE doctor_id=? AND patient_id=? AND date_time=? ";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, doctorId);
+            ps.setInt(2, patientId);
+            ps.setTimestamp(3, Timestamp.valueOf(dateTime));
+            ResultSet res=ps.executeQuery();
+            if (res.next()){
+                if(res.getInt(1)>0) return true;
+            }
+        }catch(SQLException e) {
+            System.out.println("State: " + e.getSQLState());
+            System.out.println("Code : " + e.getErrorCode());
+            System.out.println("Msg  : " + e.getMessage());
+        }
         return false;
     }
 
     @Override
     public boolean hasAppointmentOnDay(int doctorId, int patientId, LocalDate date) {
+        String query="SELECT EXISTS (SELECT 1 FROM appointments WHERE doctor_id=? AND patient_id=? AND DATE(date)=?";
+        try(Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, doctorId);
+            ps.setInt(2, patientId);
+            ps.setDate(3, Date.valueOf(date));
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                return rs.getBoolean(1);
+            }
+        } catch(SQLException e) {
+            System.out.println("State: " + e.getSQLState());
+            System.out.println("Code : " + e.getErrorCode());
+            System.out.println("Msg  : " + e.getMessage());
+        }
         return false;
     }
 
     @Override
-    public Appointment getPatientAppointment(int doctorId, int patienId) {
+    public Appointment getPatientAppointment(int doctorId, int patientId) {
+        String query="SELECT * FROM appointments WHERE doctor_id=? AND patient_id=?";
+        try(Connection conn= DatabaseConnection.getConnection();
+        PreparedStatement ps = conn.prepareStatement(query)){
+            ps.setInt(1,doctorId);
+            ps.setInt(2,patientId);
+            ResultSet rs=ps.executeQuery();
+            return new Appointment(doctorId,patientId,rs.getString("patient_name"),
+                    rs.getTimestamp("date_time").toLocalDateTime(),
+                    Appointment.Status.valueOf(rs.getString("status")));
+        }catch(SQLException e) {
+            System.out.println("State: " + e.getSQLState());
+            System.out.println("Code : " + e.getErrorCode());
+            System.out.println("Msg  : " + e.getMessage());
+        }
         return null;
     }
 }
