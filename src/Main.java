@@ -10,19 +10,37 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
+
 
 public class Main {
-    private final static DoctorRepository doctorRepository = new InMemoryDoctorRepository();
-    private final static PatientRepository patientRepository = new InMemoryPatientRepository();
-    private final static AppointmentRepository appointmentRepository = new InMemoryAppointmentRepository();
-    private final static Service service = new Service(appointmentRepository, doctorRepository, patientRepository);
-
-    public static void main(String[] args) {
+       public static void main(String[] args) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         Scanner sc = new Scanner(System.in);
+
+        System.out.println("Select Storage aMode:");
+        System.out.println("1. Database");
+        System.out.println("2. In-Memory");
+        System.out.print("Enter choice: ");
+        int mode = sc.nextInt();
+        sc.nextLine();
+
+        DoctorRepository doctorRepository;
+        PatientRepository patientRepository;
+        AppointmentRepository appointmentRepository;
+
+        if(mode == 1) {
+            doctorRepository= new DBDoctorRepository();
+            patientRepository= new DBPatientRepository();
+            appointmentRepository= new DBAppointmentRepository();
+        } else {
+            doctorRepository= new InMemoryDoctorRepository();
+            patientRepository= new InMemoryPatientRepository();
+            appointmentRepository =new InMemoryAppointmentRepository();
+        }
+
+        Service service=new Service(appointmentRepository,doctorRepository,patientRepository);
+
         boolean running = true;
         while (running) {
             System.out.println("\n===== HOSPITAL MANAGEMENT MENU =====");
