@@ -31,6 +31,7 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
                 return Appointment.Status.CANCELLED;
             }
         }
+        return Appointment.Status.BOOKED;
     }
 
     @Override
