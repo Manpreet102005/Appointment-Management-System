@@ -17,7 +17,7 @@ public class Appointment {
         this.patientId=patientId;
         this.patientName=patientName;
         this.dateTime=dateTime;
-        this.status=Status.BOOKED;
+        this.status=Status.CANCELLED;
     }
     public Appointment(int doctorId,int patientId,String patientName,LocalDateTime dateTime, Status status){
         this.doctorId=doctorId;
