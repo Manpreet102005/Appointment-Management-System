@@ -55,9 +55,9 @@ public class Main {
             System.out.println("0. Exit");
             System.out.print("Enter choice: ");
 
-            int choice = sc.nextInt();
-            sc.nextLine();
             try {
+                int choice = sc.nextInt();
+                sc.nextLine();
                 switch (choice) {
                     case 1:
                         System.out.print("Enter Doctor ID: ");
@@ -185,6 +185,7 @@ public class Main {
 
             } catch (Exception e) {
                 System.out.println("Error: "+ e.getMessage());
+                sc.nextLine();
             }
         }
         sc.close();
