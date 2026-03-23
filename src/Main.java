@@ -89,6 +89,7 @@ public class Main {
                     case 3:
                         System.out.print("Enter Doctor ID: ");
                         int bookDocId = sc.nextInt();
+                        sc.nextLine();
 
                         System.out.print("Enter Patient ID: ");
                         int bookPatId = sc.nextInt();
@@ -114,19 +115,22 @@ public class Main {
                     case 4:
                         System.out.print("Enter Doctor ID: ");
                         int cancelDocId = sc.nextInt();
+                        sc.nextLine();
 
                         System.out.print("Enter Patient ID: ");
                         int cancelPatId = sc.nextInt();
                         sc.nextLine();
 
                         Appointment.Status cancellationStatus = service.cancelAppointment(cancelDocId, cancelPatId);
-                        if (cancellationStatus.equals(Appointment.Status.CANCELLED)) System.out.println("Appointment cancelled successfully!");
+                        if (cancellationStatus.equals(Appointment.Status.CANCELLED))
+                            System.out.println("Appointment Cancelled Successfully!");
                         else System.out.println("Appointment Cancellation Failed. Try Again");
                         break;
 
                     case 5:
                         System.out.print("Enter Doctor ID: ");
                         int docId = sc.nextInt();
+                        sc.nextLine();
 
                         System.out.print("Enter Patient ID: ");
                         int patId = sc.nextInt();
@@ -142,11 +146,15 @@ public class Main {
                             throw new IllegalStateException("Invalid date-time format. Please use yyyy-MM-dd HH:mm");
                         }
 
-                        boolean status = service.reScheduleAppointment(docId,
-                                patId,
-                                appointmentRepository.getPatientAppointment(docId, patId).getDateTime(),
-                                newDateTime);
+                        Appointment existing = appointmentRepository.getPatientAppointment(docId,patId);
+                        if(existing==null){
+                            System.out.println("No Appointment Found");
+                            break;
+                        }
+
+                        boolean status = service.reScheduleAppointment(docId, patId, existing.getDateTime(), newDateTime);
                         if (status) System.out.println("Appointment Rescheduled Successfully");
+                        else System.out.println("Rescheduling Failed. Try Again");
                         break;
 
                     case 6:
