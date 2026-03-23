@@ -10,11 +10,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class InMemoryPatientRepository implements PatientRepository {
     ConcurrentHashMap<Integer, Patient> patients =new ConcurrentHashMap<>();
 
-    public synchronized void addPatient(Patient patient){
+    public synchronized boolean addPatient(Patient patient){
         if(patients.containsKey(patient.getId())){
-            throw new RuntimeException("User with this id already exists.");
+            System.out.println("Patient with this id already exists.");
+            return false;
         }
         patients.put(patient.getId(), patient);
+        return true;
     }
     public Patient getPatient(int id){
         return patients.get(id);
@@ -26,7 +28,12 @@ public class InMemoryPatientRepository implements PatientRepository {
         }
         return allPatients;
     }
-    public void removePatient(int id){
+    public boolean removePatient(int id){
+        if(!patients.containsKey(id)){
+            System.out.println("Patient with this id doesn't exists.");
+            return false;
+        }
         patients.remove(id);
+        return true;
     }
 }

@@ -8,17 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBPatientRepository implements PatientRepository {
-    public void addPatient(Patient patient){
+    public boolean addPatient(Patient patient){
         String query="INSERT INTO patients (id, fullname) VALUES (?,?)";
         try(Connection conn= DatabaseConnection.getConnection();
             PreparedStatement ps= conn.prepareStatement(query)){
             ps.setInt(1,patient.getId());
             ps.setString(2,patient.getFullName());
-            ps.executeUpdate();
+            int rows=ps.executeUpdate();
+            return rows==1;
         } catch (SQLException e) {
             System.out.println("State: " + e.getSQLState());
             System.out.println("Code : " + e.getErrorCode());
             System.out.println("Msg  : " + e.getMessage());
+            return false;
         }
     }
     public List<Patient> getAllPatients() {
@@ -55,18 +57,20 @@ public class DBPatientRepository implements PatientRepository {
         }
         return patient;
     }
-    public void removePatient(int id){
+    public boolean removePatient(int id){
         String query= "DELETE FROM patients WHERE id=?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
 
             ps.setInt(1,id);
-            ps.executeUpdate();
+            int rows=ps.executeUpdate();
+            return rows==1;
 
         } catch (SQLException e) {
             System.out.println("State: " + e.getSQLState());
             System.out.println("Code : " + e.getErrorCode());
             System.out.println("Msg  : " + e.getMessage());
+            return false;
         }
     }
 }
