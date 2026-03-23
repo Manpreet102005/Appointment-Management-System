@@ -53,8 +53,8 @@ public class Service {
             throw new IllegalArgumentException("Working Hours: 10:00 am to 8:30 pm");
         }
 
-        if (appointmentRepository.appointmentExists(doctorId, patientId, dateTime)) {
-            throw new IllegalStateException("Patient already has an appointment on this day");
+        if (appointmentRepository.hasAppointmentOnDay(doctorId, patientId, dateTime.toLocalDate())) {
+            throw new IllegalStateException("Patient already has an appointment with this doctor on this day");
         }
 
         if(!appointmentRepository.isSlotAvailable(doctorId,dateTime)){
