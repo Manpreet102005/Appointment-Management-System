@@ -43,7 +43,7 @@ public class DBDoctorRepository implements DoctorRepository {
         }
     }
     public Doctor getDoctor(int id){
-        String query = "SELECT * FROM doctors WHERE id=?";
+        String query = "SELECT * FROM doctors WHERE doctor_id=?";
         Doctor doctor = null;
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
