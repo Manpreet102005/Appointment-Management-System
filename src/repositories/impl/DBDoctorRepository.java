@@ -22,9 +22,9 @@ public class DBDoctorRepository implements DoctorRepository {
             int rows=ps.executeUpdate();
             return rows==1;
         } catch (SQLException e) {
-            System.out.println("State: " + e.getSQLState());
-            System.out.println("Code : " + e.getErrorCode());
-            System.out.println("Msg  : " + e.getMessage());
+            System.err.println("State: " + e.getSQLState());
+            System.err.println("Code : " + e.getErrorCode());
+            System.err.println("Msg  : " + e.getMessage());
             return false;
         }
     }
@@ -36,9 +36,9 @@ public class DBDoctorRepository implements DoctorRepository {
             int rows=ps.executeUpdate();
             return rows==1;
         } catch (SQLException e) {
-            System.out.println("State: " + e.getSQLState());
-            System.out.println("Code : " + e.getErrorCode());
-            System.out.println("Msg  : " + e.getMessage());
+            System.err.println("State: " + e.getSQLState());
+            System.err.println("Code : " + e.getErrorCode());
+            System.err.println("Msg  : " + e.getMessage());
             return false;
         }
     }
@@ -56,9 +56,9 @@ public class DBDoctorRepository implements DoctorRepository {
                 );
             }
         } catch (SQLException e) {
-            System.out.println("State: " + e.getSQLState());
-            System.out.println("Code : " + e.getErrorCode());
-            System.out.println("Msg  : " + e.getMessage());
+            System.err.println("State: " + e.getSQLState());
+            System.err.println("Code : " + e.getErrorCode());
+            System.err.println("Msg  : " + e.getMessage());
         }
         return doctor;
     }
@@ -78,9 +78,9 @@ public class DBDoctorRepository implements DoctorRepository {
                 list.add(doctor);
             }
         } catch (SQLException e) {
-            System.out.println("State: " + e.getSQLState());
-            System.out.println("Code : " + e.getErrorCode());
-            System.out.println("Msg  : " + e.getMessage());
+            System.err.println("State: " + e.getSQLState());
+            System.err.println("Code : " + e.getErrorCode());
+            System.err.println("Msg  : " + e.getMessage());
         }
         return list;
     }

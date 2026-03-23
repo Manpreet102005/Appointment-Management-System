@@ -27,9 +27,9 @@ public class DBAppointmentRepository implements AppointmentRepository {
             ps.executeUpdate();
             appointment.setStatus(Appointment.Status.BOOKED);
         } catch (SQLException e) {
-            System.out.println("State: " + e.getSQLState());
-            System.out.println("Code : " + e.getErrorCode());
-            System.out.println("Msg  : " + e.getMessage());
+            System.err.println("State: " + e.getSQLState());
+            System.err.println("Code : " + e.getErrorCode());
+            System.err.println("Msg  : " + e.getMessage());
         }
     }
 
@@ -41,9 +41,9 @@ public class DBAppointmentRepository implements AppointmentRepository {
             ps.setInt(2,patientId);
             ps.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("State: " + e.getSQLState());
-            System.out.println("Code : " + e.getErrorCode());
-            System.out.println("Msg  : " + e.getMessage());
+            System.err.println("State: " + e.getSQLState());
+            System.err.println("Code : " + e.getErrorCode());
+            System.err.println("Msg  : " + e.getMessage());
         }
         return Appointment.Status.CANCELLED;
     }
@@ -59,9 +59,9 @@ public class DBAppointmentRepository implements AppointmentRepository {
                 if(rs.getInt("count")==0) return true;
             }
         }catch(SQLException e){
-            System.out.println("State: " + e.getSQLState());
-            System.out.println("Code : " + e.getErrorCode());
-            System.out.println("Msg  : " + e.getMessage());
+            System.err.println("State: " + e.getSQLState());
+            System.err.println("Code : " + e.getErrorCode());
+            System.err.println("Msg  : " + e.getMessage());
         }
         return false;
     }
@@ -90,9 +90,9 @@ public class DBAppointmentRepository implements AppointmentRepository {
                 );
             }
         }catch(SQLException e){
-            System.out.println("State: " + e.getSQLState());
-            System.out.println("Code : " + e.getErrorCode());
-            System.out.println("Msg  : " + e.getMessage());
+            System.err.println("State: " + e.getSQLState());
+            System.err.println("Code : " + e.getErrorCode());
+            System.err.println("Msg  : " + e.getMessage());
         }
         return allAppointments;
     }
@@ -120,9 +120,9 @@ public class DBAppointmentRepository implements AppointmentRepository {
                 );
             }
         }catch(SQLException e){
-            System.out.println("State: " + e.getSQLState());
-            System.out.println("Code : " + e.getErrorCode());
-            System.out.println("Msg  : " + e.getMessage());
+            System.err.println("State: " + e.getSQLState());
+            System.err.println("Code : " + e.getErrorCode());
+            System.err.println("Msg  : " + e.getMessage());
         }
         return allAppointments;
     }
@@ -140,9 +140,9 @@ public class DBAppointmentRepository implements AppointmentRepository {
                 if(res.getInt(1)>0) return true;
             }
         }catch(SQLException e) {
-            System.out.println("State: " + e.getSQLState());
-            System.out.println("Code : " + e.getErrorCode());
-            System.out.println("Msg  : " + e.getMessage());
+            System.err.println("State: " + e.getSQLState());
+            System.err.println("Code : " + e.getErrorCode());
+            System.err.println("Msg  : " + e.getMessage());
         }
         return false;
     }
@@ -160,9 +160,9 @@ public class DBAppointmentRepository implements AppointmentRepository {
                 return rs.getBoolean(1);
             }
         } catch(SQLException e) {
-            System.out.println("State: " + e.getSQLState());
-            System.out.println("Code : " + e.getErrorCode());
-            System.out.println("Msg  : " + e.getMessage());
+            System.err.println("State: " + e.getSQLState());
+            System.err.println("Code : " + e.getErrorCode());
+            System.err.println("Msg  : " + e.getMessage());
         }
         return false;
     }
@@ -179,9 +179,9 @@ public class DBAppointmentRepository implements AppointmentRepository {
                     rs.getTimestamp("date_time").toLocalDateTime(),
                     Appointment.Status.valueOf(rs.getString("status")));
         }catch(SQLException e) {
-            System.out.println("State: " + e.getSQLState());
-            System.out.println("Code : " + e.getErrorCode());
-            System.out.println("Msg  : " + e.getMessage());
+            System.err.println("State: " + e.getSQLState());
+            System.err.println("Code : " + e.getErrorCode());
+            System.err.println("Msg  : " + e.getMessage());
         }
         return null;
     }

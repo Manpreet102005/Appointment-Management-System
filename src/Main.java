@@ -72,7 +72,7 @@ public class Main {
 
                         boolean dAddStatus=service.addDoctor(dId, dName, dSpec);
                         if(dAddStatus) System.out.println("Doctor Added successfully!");
-                        else System.out.println("Doctor with this ID already exists!");
+                        else System.out.println("Failed to add doctor. Please try again!");
                         break;
 
                     case 2:
@@ -85,7 +85,7 @@ public class Main {
 
                         boolean pAddStatus=service.addPatient(pId, pName);
                         if(pAddStatus) System.out.println("Patient added successfully!");
-                        else System.out.println("Patient with this ID already exists!");
+                        else System.out.println("Failed to add patient. Please try again!");
                         break;
 
                     case 3:
