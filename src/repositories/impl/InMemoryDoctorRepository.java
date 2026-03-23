@@ -10,22 +10,27 @@ import java.util.concurrent.ConcurrentHashMap;
 public class InMemoryDoctorRepository implements DoctorRepository {
     ConcurrentHashMap<Integer, Doctor> doctors=new ConcurrentHashMap<>();
 
-    public synchronized void addDoctor(Doctor doctor){
+    public synchronized boolean addDoctor(Doctor doctor){
         if(doctors.containsKey(doctor.getId())){
-            throw  new RuntimeException("Doctor with this id already exists");
+            return false;
         }
         doctors.put(doctor.getId(),doctor);
+        return true;
     }
-    public synchronized void removeDoctor(int id){
+    public synchronized boolean removeDoctor(int id){
+        if(!doctors.containsKey(id)){
+            return false;
+        }
         doctors.remove(id);
+        return true;
     }
     public Doctor getDoctor(int id){
         return doctors.get(id);
     }
     public List<Doctor> getAllDoctors(){
         List<Doctor> doctorsList=new ArrayList<>();
-        for(int id:doctors.keySet()){
-            doctorsList.add(doctors.get(id));
+        for(Doctor doctor:doctors.values()){
+            doctorsList.add(doctor);
         }
         return doctorsList;
     }
