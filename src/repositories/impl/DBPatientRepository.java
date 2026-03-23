@@ -9,7 +9,7 @@ import java.util.List;
 
 public class DBPatientRepository implements PatientRepository {
     public boolean addPatient(Patient patient){
-        String query="INSERT INTO patients (id, fullname) VALUES (?,?)";
+        String query="INSERT INTO patients (id, patient_name) VALUES (?,?)";
         try(Connection conn= DatabaseConnection.getConnection();
             PreparedStatement ps= conn.prepareStatement(query)){
             ps.setInt(1,patient.getId());
@@ -30,7 +30,7 @@ public class DBPatientRepository implements PatientRepository {
              PreparedStatement ps = conn.prepareStatement(query)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(new Patient(rs.getInt("id"), rs.getString("fullname")));
+                list.add(new Patient(rs.getInt("id"), rs.getString("patient_name")));
             }
         } catch (SQLException e) {
             System.out.println("State: " + e.getSQLState());
@@ -48,7 +48,7 @@ public class DBPatientRepository implements PatientRepository {
             ps.setInt(1,id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                patient = new Patient(rs.getInt("id"), rs.getString("fullname"));
+                patient = new Patient(rs.getInt("id"), rs.getString("patient_name"));
             }
         } catch (SQLException e) {
             System.out.println("State: " + e.getSQLState());
