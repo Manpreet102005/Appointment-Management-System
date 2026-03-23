@@ -23,13 +23,14 @@ public class DBAppointmentRepository implements AppointmentRepository {
             ps.setInt(1, appointment.getDoctorId());
             ps.setInt(2, appointment.getPatientId());
             ps.setTimestamp(3, Timestamp.valueOf(appointment.getDateTime()));
-            ps.setString(4, appointment.getStatus().name());
+            ps.setString(4, Appointment.Status.BOOKED.name());
             ps.executeUpdate();
             appointment.setStatus(Appointment.Status.BOOKED);
         } catch (SQLException e) {
             System.err.println("State: " + e.getSQLState());
             System.err.println("Code : " + e.getErrorCode());
             System.err.println("Msg  : " + e.getMessage());
+
         }
     }
 
