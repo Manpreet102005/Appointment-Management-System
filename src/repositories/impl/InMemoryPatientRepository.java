@@ -1,7 +1,7 @@
-package repositries.impl;
+package repositories.impl;
 
 import entities.Patient;
-import repositries.PatientRepository;
+import repositories.PatientRepository;
 
 import java.util.ArrayList;
 import java.util.List;

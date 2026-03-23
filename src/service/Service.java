@@ -4,7 +4,7 @@ import entities.Appointment;
 import entities.Doctor;
 import entities.Patient;
 import entities.Person;
-import repositries.*;
+import repositories.*;
 import validations.PersonValidation;
 
 import java.time.LocalDateTime;

@@ -1,10 +1,10 @@
-package repositries.impl;
+package repositories.impl;
 
 
 import entities.Appointment;
-import repositries.AppointmentRepository;
+import repositories.AppointmentRepository;
 import util.DatabaseConnection;
-import java.awt.*;
+
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

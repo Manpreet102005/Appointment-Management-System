@@ -1,7 +1,7 @@
-package repositries.impl;
+package repositories.impl;
 
 import entities.Appointment;
-import repositries.AppointmentRepository;
+import repositories.AppointmentRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

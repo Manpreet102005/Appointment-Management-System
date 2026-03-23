@@ -1,9 +1,9 @@
 import entities.Appointment;
 import entities.Doctor;
 import entities.Patient;
-import repositries.*;
+import repositories.*;
 import service.Service;
-import repositries.impl.*;
+import repositories.impl.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

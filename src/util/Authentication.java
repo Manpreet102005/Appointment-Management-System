@@ -1,7 +1,7 @@
 package util;
 
 
-import repositries.impl.InMemoryAuthorisedUsersRepository;
+import repositories.impl.InMemoryAuthorisedUsersRepository;
 import validations.CredentialValidation;
 
 

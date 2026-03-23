@@ -1,4 +1,4 @@
-package repositries;
+package repositories;
 import entities.Doctor;
 
 import java.util.List;

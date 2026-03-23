@@ -1,4 +1,4 @@
-package repositries.impl;
+package repositories.impl;
 
 import java.util.concurrent.ConcurrentHashMap;
 
