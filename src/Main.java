@@ -8,6 +8,7 @@ import repositories.impl.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -183,8 +184,12 @@ public class Main {
                         System.out.println("Invalid choice!");
                 }
 
+            } catch(InputMismatchException e){
+                System.out.println("Error: Invalid Input. Please enter number only.");
+                sc.nextLine();
             } catch (Exception e) {
-                System.out.println("Error: "+ e.getMessage());
+                System.err.println("Error: "+ e.getMessage());
+                System.out.println("Something went wrong.");
                 sc.nextLine();
             }
         }
