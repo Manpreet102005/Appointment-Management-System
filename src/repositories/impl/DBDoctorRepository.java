@@ -13,7 +13,7 @@ import java.util.List;
 
 public class DBDoctorRepository implements DoctorRepository {
     public boolean addDoctor(Doctor doctor){
-        String query="INSERT INTO doctors (id, fullname,specialisation) VALUES (?,?,?)";
+        String query="INSERT INTO doctors (doctor_id, doctor_name,specialisation) VALUES (?,?,?)";
         try(Connection conn= DatabaseConnection.getConnection();
             PreparedStatement ps= conn.prepareStatement(query)){
             ps.setInt(1,doctor.getId());
@@ -29,7 +29,7 @@ public class DBDoctorRepository implements DoctorRepository {
         }
     }
     public boolean removeDoctor(int id){
-        String query= "DELETE FROM doctors WHERE id=?";
+        String query= "DELETE FROM doctors WHERE doctor_id=?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1,id);
@@ -50,8 +50,8 @@ public class DBDoctorRepository implements DoctorRepository {
             ps.setInt(1,id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                doctor = new Doctor(rs.getInt("id"),
-                        rs.getString("fullname"),
+                doctor = new Doctor(rs.getInt("doctor_id"),
+                        rs.getString("doctor_name"),
                         rs.getString("specialisation")
                 );
             }
@@ -71,8 +71,8 @@ public class DBDoctorRepository implements DoctorRepository {
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                doctor = new Doctor(rs.getInt("id"),
-                        rs.getString("fullname"),
+                doctor = new Doctor(rs.getInt("doctor_id"),
+                        rs.getString("doctor_name"),
                         rs.getString("specialisation")
                 );
                 list.add(doctor);
