@@ -150,7 +150,7 @@ public class DBAppointmentRepository implements AppointmentRepository {
 
     @Override
     public boolean hasAppointmentOnDay(int doctorId, int patientId, LocalDate date) {
-        String query="SELECT EXISTS (SELECT 1 FROM appointments WHERE doctor_id=? AND patient_id=? AND DATE(date)=?";
+        String query="SELECT EXISTS (SELECT 1 FROM appointments WHERE doctor_id=? AND patient_id=? AND DATE(date_time)=DATE(?))";
         try(Connection conn = DatabaseConnection.getConnection();
             PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, doctorId);
