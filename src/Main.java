@@ -70,8 +70,9 @@ public class Main {
                         System.out.print("Enter Specialization: ");
                         String dSpec = sc.nextLine();
 
-                        service.addDoctor(dId, dName, dSpec);
-                        System.out.println("Doctor Added successfully!");
+                        boolean dAddStatus=service.addDoctor(dId, dName, dSpec);
+                        if(dAddStatus) System.out.println("Doctor Added successfully!");
+                        else System.out.println("Doctor with this ID already exists!");
                         break;
 
                     case 2:
@@ -82,8 +83,9 @@ public class Main {
                         System.out.print("Enter Patient Name: ");
                         String pName = sc.nextLine();
 
-                        service.addPatient(pId, pName);
-                        System.out.println("Patient added successfully!");
+                        boolean pAddStatus=service.addPatient(pId, pName);
+                        if(pAddStatus) System.out.println("Patient added successfully!");
+                        else System.out.println("Patient with this ID already exists!");
                         break;
 
                     case 3:
