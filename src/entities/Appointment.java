@@ -47,13 +47,14 @@ public class Appointment {
     }
     @Override
     public String toString() {
-        return "Appointment{" +
-                "doctorId=" + doctorId +
-                ", patientId=" + patientId +
-                ", patientName='" + patientName + '\'' +
-                ", dateTime=" + dateTime +
-                ", status=" + status +
-                '}';
+        return String.format(
+                "doctorId: %d | patientId: %d | patientName: %s | dateTime: %s | status: %s",
+                doctorId,
+                patientId,
+                patientName,
+                dateTime,
+                status
+        );
     }
 
 }
