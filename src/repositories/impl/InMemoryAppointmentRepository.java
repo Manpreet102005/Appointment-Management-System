@@ -24,15 +24,21 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         }
     }
     @Override
-    public Appointment.Status cancelAppointment(int doctorId, int patientId){
-        TreeMap<Integer,Appointment> schedule=appointments.get(doctorId);
-        if(schedule.containsKey(patientId)) {
-            synchronized (schedule){
-                appointments.get(doctorId).remove(patientId);
-                return Appointment.Status.CANCELLED;
+    public Appointment.Status cancelAppointment(int doctorId, int patientId, LocalDate date){
+        TreeMap<Integer, Appointment> schedule = appointments.get(doctorId);
+        if (schedule == null) return Appointment.Status.BOOKED;
+
+        synchronized (schedule) {
+            Appointment a = schedule.get(patientId);
+            if (a == null || a.getStatus() == Appointment.Status.CANCELLED) {
+                return Appointment.Status.BOOKED;
             }
+            if (!a.getDateTime().toLocalDate().equals(date)) {
+                return Appointment.Status.BOOKED;
+            }
+            a.setStatus(Appointment.Status.CANCELLED);
+            return Appointment.Status.CANCELLED;
         }
-        return Appointment.Status.BOOKED;
     }
     @Override
     public boolean isSlotAvailable(int doctorId, LocalDateTime dateTime){
