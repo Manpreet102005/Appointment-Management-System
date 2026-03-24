@@ -7,6 +7,8 @@ import entities.Person;
 import repositories.*;
 import validations.PersonValidation;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
@@ -82,7 +84,7 @@ public class Service {
             throw new RuntimeException("No Appointment exist with these details");
         }
 
-        return appointmentRepository.cancelAppointment(doctorId,patientId);
+        return appointmentRepository.cancelAppointment(doctorId,patientId, dateTime.toLocalDate());
     }
 
     public boolean reScheduleAppointment(int doctorId,int patientId,LocalDateTime oldDateTime,LocalDateTime newDateTime){

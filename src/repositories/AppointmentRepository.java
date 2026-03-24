@@ -9,7 +9,7 @@ import java.util.List;
 public interface AppointmentRepository {
      void addAppointment(Appointment appointment);
 
-     Appointment.Status cancelAppointment(int doctorId, int patientId);
+     Appointment.Status cancelAppointment(int doctorId, int patientId, LocalDate date);
 
      boolean isSlotAvailable(int doctorId, LocalDateTime dateTime);
 

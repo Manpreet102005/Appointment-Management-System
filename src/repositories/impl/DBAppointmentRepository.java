@@ -24,8 +24,12 @@ public class DBAppointmentRepository implements AppointmentRepository {
             ps.setInt(2, appointment.getPatientId());
             ps.setTimestamp(3, Timestamp.valueOf(appointment.getDateTime()));
             ps.setString(4, Appointment.Status.BOOKED.name());
-            ps.executeUpdate();
-            appointment.setStatus(Appointment.Status.BOOKED);
+            int res=ps.executeUpdate();
+            if (res == 1) {
+                appointment.setStatus(Appointment.Status.BOOKED);
+            } else {
+                appointment.setStatus(Appointment.Status.CANCELLED);
+            }
         } catch (SQLException e) {
             System.err.println("State: " + e.getSQLState());
             System.err.println("Code : " + e.getErrorCode());
@@ -34,23 +38,31 @@ public class DBAppointmentRepository implements AppointmentRepository {
         }
     }
 
-    public Appointment.Status cancelAppointment(int doctorId, int patientId){
-        String query= "DELETE FROM appointments WHERE doctor_id= ? AND patient_id= ?";
+    public Appointment.Status cancelAppointment(int doctorId, int patientId, LocalDate date){
+        //Soft Deletion
+        String query = """
+        UPDATE appointments SET status = 'CANCELLED' 
+        WHERE doctor_id = ? AND patient_id = ? AND DATE(date_time) = ? 
+        and status='BOOKED'
+        """;
         try(Connection conn= DatabaseConnection.getConnection();
         PreparedStatement ps=conn.prepareStatement(query)){
             ps.setInt(1,doctorId);
             ps.setInt(2,patientId);
-            ps.executeUpdate();
+            ps.setDate(3,Date.valueOf(date));
+            int res=ps.executeUpdate();
+            if(res>0) return Appointment.Status.CANCELLED;
+            else return Appointment.Status.BOOKED;
         } catch (SQLException e) {
             System.err.println("State: " + e.getSQLState());
             System.err.println("Code : " + e.getErrorCode());
             System.err.println("Msg  : " + e.getMessage());
+            return Appointment.Status.BOOKED;
         }
-        return Appointment.Status.CANCELLED;
     }
 
     public boolean isSlotAvailable(int doctorId, LocalDateTime dateTime){
-        String query = "SELECT COUNT(*) AS count FROM appointments WHERE doctor_id=? AND date_time = ?";
+        String query = "SELECT COUNT(*) AS count FROM appointments WHERE doctor_id=? AND date_time = ? AND status='BOOKED";
         try(Connection conn = DatabaseConnection.getConnection();
         PreparedStatement ps= conn.prepareStatement(query)){
             ps.setInt(1,doctorId);
@@ -130,7 +142,7 @@ public class DBAppointmentRepository implements AppointmentRepository {
 
     @Override
     public boolean appointmentExists(int doctorId, int patientId, LocalDateTime dateTime) {
-        String query = "SELECT COUNT(*) FROM appointments WHERE doctor_id=? AND patient_id=? AND date_time=? ";
+        String query = "SELECT COUNT(*) FROM appointments WHERE doctor_id=? AND patient_id=? AND date_time=? AND status='BOOKED ";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, doctorId);
@@ -150,7 +162,11 @@ public class DBAppointmentRepository implements AppointmentRepository {
 
     @Override
     public boolean hasAppointmentOnDay(int doctorId, int patientId, LocalDate date) {
-        String query="SELECT EXISTS (SELECT 1 FROM appointments WHERE doctor_id=? AND patient_id=? AND DATE(date_time)=DATE(?))";
+        String query="""
+        SELECT EXISTS (SELECT 1 FROM appointments 
+        WHERE doctor_id=? AND patient_id=? AND DATE(date_time)=DATE(?)
+        AND status='BOOKED')
+        """;
         try(Connection conn = DatabaseConnection.getConnection();
             PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, doctorId);
