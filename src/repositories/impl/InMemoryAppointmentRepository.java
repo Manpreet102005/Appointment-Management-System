@@ -20,7 +20,8 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         TreeMap<Integer,Appointment> schedule=appointments.get(appointment.getDoctorId());
 
         synchronized (schedule){
-            appointment.setAppointmentId(appointmentId+1);
+            appointmentId++;
+            appointment.setAppointmentId(appointmentId);
             appointment.setStatus(Appointment.Status.BOOKED);
             schedule.put(appointment.getAppointmentId(),appointment);
         }
