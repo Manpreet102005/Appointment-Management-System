@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class InMemoryAppointmentRepository implements AppointmentRepository {
+    private static int appointmentId=1;
     ConcurrentHashMap<Integer, TreeMap<Integer, Appointment>> appointments=new ConcurrentHashMap<>();
     @Override
     public void addAppointment(Appointment appointment){
@@ -19,24 +20,25 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         TreeMap<Integer,Appointment> schedule=appointments.get(appointment.getDoctorId());
 
         synchronized (schedule){
+            appointment.setAppointmentId(appointmentId+1);
             appointment.setStatus(Appointment.Status.BOOKED);
-            schedule.put(appointment.getPatientId(),appointment);
+            schedule.put(appointment.getAppointmentId(),appointment);
         }
     }
     @Override
-    public Appointment.Status cancelAppointment(int doctorId, int patientId, LocalDate date){
+    public Appointment.Status cancelAppointment(int doctorId, int appointmentId){
         TreeMap<Integer, Appointment> schedule = appointments.get(doctorId);
-        if (schedule == null) return Appointment.Status.BOOKED;
+        if (schedule == null) {
+            throw new NoSuchElementException("No appointments found");
+        }
 
         synchronized (schedule) {
-            Appointment a = schedule.get(patientId);
-            if (a == null || a.getStatus() == Appointment.Status.CANCELLED) {
-                return Appointment.Status.BOOKED;
+            Appointment a = schedule.get(appointmentId);
+
+            if(a==null){
+                throw new NoSuchElementException("Appointment not found");
             }
-            if (!a.getDateTime().toLocalDate().equals(date)) {
-                return Appointment.Status.BOOKED;
-            }
-            a.setStatus(Appointment.Status.CANCELLED);
+            schedule.remove(appointmentId);
             return Appointment.Status.CANCELLED;
         }
     }
@@ -91,5 +93,15 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
              throw new NoSuchElementException("No Appointment Exist");
          }
         return appointment;
+    }
+
+    @Override
+    public Appointment getAppointmentById(int doctorId, int appointmentId) {
+        TreeMap<Integer,Appointment> schedule = appointments.get(doctorId);
+
+        if(schedule==null) {
+            return null;
+        }
+        return schedule.get(appointmentId);
     }
 }

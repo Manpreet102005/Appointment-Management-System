@@ -69,20 +69,18 @@ public class Service {
         return appointment.getStatus();
     }
 
-    public Appointment.Status cancelAppointment(int doctorId, int patientId) {
+    public Appointment.Status cancelAppointment(int doctorId, int appointmentId) {
         Doctor doctor = doctorRepository.getDoctor(doctorId);
         if (doctor == null) {
             throw new NoSuchElementException("Doctor does not exist.");
         }
-        Appointment patientAppointment=appointmentRepository.getPatientAppointment(doctorId,patientId);
+        Appointment patientAppointment=appointmentRepository.getAppointmentById(doctorId,appointmentId);
 
         if(patientAppointment==null){
-            throw new NoSuchElementException("No Appointments found");
+            throw new NoSuchElementException("Appointment not found");
         }
 
-        LocalDateTime dateTime=patientAppointment.getDateTime();
-
-        return appointmentRepository.cancelAppointment(doctorId,patientId, dateTime.toLocalDate());
+        return appointmentRepository.cancelAppointment(doctorId,appointmentId);
     }
 
     public boolean reScheduleAppointment(int doctorId,int patientId,LocalDateTime oldDateTime,LocalDateTime newDateTime){

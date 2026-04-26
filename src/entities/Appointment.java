@@ -6,6 +6,8 @@ public class Appointment {
     public enum Status{
         BOOKED, CANCELLED;
     }
+
+    private int appointmentId;
     private final int doctorId;
     private final int patientId;
     private final String patientName;
@@ -45,10 +47,13 @@ public class Appointment {
     public void setStatus(Status status){
         this.status=status;
     }
+    public int getAppointmentId() { return appointmentId;}
+    public void setAppointmentId(int appointmentId) { this.appointmentId = appointmentId;}
     @Override
     public String toString() {
         return String.format(
-                "doctorId: %d | patientId: %d | patientName: %s | dateTime: %s | status: %s",
+                "appointmentId: %d | doctorId: %d | patientId: %d | patientName: %s | dateTime: %s | status: %s",
+                appointmentId,
                 doctorId,
                 patientId,
                 patientName,
