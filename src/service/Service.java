@@ -74,15 +74,13 @@ public class Service {
         if (doctor == null) {
             throw new NoSuchElementException("Doctor does not exist.");
         }
+        Appointment patientAppointment=appointmentRepository.getPatientAppointment(doctorId,patientId);
 
-        if(!appointmentRepository.getAllAppointments().contains(doctorId)){
+        if(patientAppointment==null){
             throw new NoSuchElementException("No Appointments found");
         }
 
-        LocalDateTime dateTime=appointmentRepository.getAllAppointmentsOf(doctorId).get(patientId).getDateTime();
-        if (!appointmentRepository.appointmentExists(doctorId, patientId, dateTime)){
-            throw new RuntimeException("No Appointment exist with these details");
-        }
+        LocalDateTime dateTime=patientAppointment.getDateTime();
 
         return appointmentRepository.cancelAppointment(doctorId,patientId, dateTime.toLocalDate());
     }
