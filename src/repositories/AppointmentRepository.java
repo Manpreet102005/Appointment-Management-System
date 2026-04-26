@@ -17,7 +17,7 @@ public interface AppointmentRepository {
 
      List<Appointment> getAllAppointments();
 
-     boolean appointmentExists(int doctorId, int patientId, LocalDateTime dateTime);
+     boolean appointmentExists(int doctorId, int appointmentId);
 
      boolean hasAppointmentOnDay(int doctorId, int patientId, LocalDate date);
 

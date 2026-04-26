@@ -83,30 +83,35 @@ public class Service {
         return appointmentRepository.cancelAppointment(doctorId,appointmentId);
     }
 
-    public boolean reScheduleAppointment(int doctorId,int patientId,LocalDateTime oldDateTime,LocalDateTime newDateTime){
+    public Appointment reScheduleAppointment(int doctorId,int patientId,int appointmentId,LocalDateTime newDateTime){
         Doctor doctor=doctorRepository.getDoctor(doctorId);
 
         if(doctor==null) {
             throw new NoSuchElementException("Doctor Not Found");
         }
-        if (!appointmentRepository.appointmentExists(doctorId,  patientId, oldDateTime)) {
-            throw new NoSuchElementException("No scheduled appointment at " + oldDateTime);
+        Appointment oldAppointment =appointmentRepository.getAppointmentById(doctorId,appointmentId);
+        if (oldAppointment==null) {
+            throw new NoSuchElementException("No scheduled appointment");
         }
 
-        if (!appointmentRepository.isSlotAvailable(doctorId, newDateTime)) {
+        if(oldAppointment.getPatientId()!=patientId){
+            throw new IllegalArgumentException("Patient mismatch");
+        }
+
+        if (!oldAppointment.getDateTime().equals(newDateTime) &&
+                !appointmentRepository.isSlotAvailable(doctorId, newDateTime)) {
             throw new IllegalStateException("Slot already booked at " + newDateTime);
         }
+        try {
+            appointmentRepository.cancelAppointment(doctorId, appointmentId);
 
-        Appointment.Status canStatus=cancelAppointment(doctorId,patientId);
-        if(!canStatus.equals(Appointment.Status.CANCELLED)) {
-            throw new RuntimeException("Appointment Reschedulation Failed. Try Again");
+            Appointment newAppointment = new Appointment(doctorId, patientId, oldAppointment.getPatientName(),
+                    newDateTime);
+            appointmentRepository.addAppointment(newAppointment);
         }
-
-        Appointment.Status bookStatus= addAppointment(doctorId,newDateTime, patientId);
-        if (!bookStatus.equals(Appointment.Status.BOOKED)){
-            throw new RuntimeException("Appointment Reschedulation Failed. Try Again");
+        catch(Exception e){
+            throw new RuntimeException("Rescheduling Failed. Try Again");
         }
-        return true;
     }
 }
 

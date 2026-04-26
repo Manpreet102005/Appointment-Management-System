@@ -54,10 +54,8 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
     }
     @Override
     public List<Appointment> getAllAppointmentsOf(int doctorId){
-        List<Appointment> result = new ArrayList<>();
         TreeMap<Integer, Appointment> doctorMap = appointments.get(doctorId);
-        if(doctorMap == null) return result;
-        result.addAll(doctorMap.values());
+        List<Appointment> result = new ArrayList<>(doctorMap.values());
         return result;
     }
 
@@ -70,12 +68,11 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         return result;
     }
     @Override
-    public boolean appointmentExists(int doctorId, int patientId, LocalDateTime dateTime) {
+    public boolean appointmentExists(int doctorId, int appointmentId) {
         TreeMap<Integer,Appointment> doctorMap = appointments.get(doctorId);
         if(doctorMap == null) return false;
-        Appointment a = doctorMap.get(patientId);
-        if(a == null) return false;
-        return a.getDateTime().equals(dateTime);
+        Appointment a = doctorMap.get(appointmentId);
+        return a != null;
     }
     @Override
     public boolean hasAppointmentOnDay(int doctorId, int patientId, LocalDate date) {

@@ -120,7 +120,7 @@ public class Main {
                         int cancelDocId = sc.nextInt();
                         sc.nextLine();
 
-                        System.out.print("Enter Patient ID: ");
+                        System.out.print("Enter Appointment ID: ");
                         int cancelPatId = sc.nextInt();
                         sc.nextLine();
 
@@ -139,6 +139,10 @@ public class Main {
                         int patId = sc.nextInt();
                         sc.nextLine();
 
+                        System.out.print("Enter Appointment ID: ");
+                        int appId = sc.nextInt();
+                        sc.nextLine();
+
                         System.out.print("Enter New Time (yyyy-MM-dd HH:mm): ");
                         String newDateTimeString = sc.nextLine();
 
@@ -148,16 +152,13 @@ public class Main {
                         } catch (DateTimeParseException e) {
                             throw new IllegalStateException("Invalid date-time format. Please use yyyy-MM-dd HH:mm");
                         }
-
-                        Appointment existing = appointmentRepository.getPatientAppointment(docId,patId);
-                        if(existing==null){
-                            System.out.println("No Appointment Found");
-                            break;
+                        try {
+                            Appointment a = service.reScheduleAppointment(docId, patId, appId, newDateTime);
+                            System.out.println("Appointment Rescheduled Successfully. New appointment id: " + a.getAppointmentId());
+                        }catch(Exception e) {
+                            System.out.println("Rescheduling Failed. Try Again");
+                            System.out.println(e.getMessage());
                         }
-
-                        boolean status = service.reScheduleAppointment(docId, patId, existing.getDateTime(), newDateTime);
-                        if (status) System.out.println("Appointment Rescheduled Successfully");
-                        else System.out.println("Rescheduling Failed. Try Again");
                         break;
 
                     case 6:
