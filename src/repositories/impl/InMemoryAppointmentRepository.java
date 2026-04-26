@@ -12,7 +12,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class InMemoryAppointmentRepository implements AppointmentRepository {
-    private static int appointmentId=1;
+    private static int appointmentId=0;
     ConcurrentHashMap<Integer, TreeMap<Integer, Appointment>> appointments=new ConcurrentHashMap<>();
     @Override
     public void addAppointment(Appointment appointment){
