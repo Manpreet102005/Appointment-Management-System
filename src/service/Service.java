@@ -98,20 +98,25 @@ public class Service {
             throw new IllegalArgumentException("Patient mismatch");
         }
 
-        if (!oldAppointment.getDateTime().equals(newDateTime) &&
-                !appointmentRepository.isSlotAvailable(doctorId, newDateTime)) {
+        if (oldAppointment.getDateTime().equals(newDateTime)) {
+            throw new IllegalArgumentException("New time cannot be same as old time");
+        }
+
+        if (!appointmentRepository.isSlotAvailable(doctorId, newDateTime)) {
             throw new IllegalStateException("Slot already booked at " + newDateTime);
         }
+        Appointment newAppointment;
         try {
             appointmentRepository.cancelAppointment(doctorId, appointmentId);
 
-            Appointment newAppointment = new Appointment(doctorId, patientId, oldAppointment.getPatientName(),
+            newAppointment = new Appointment(doctorId, patientId, oldAppointment.getPatientName(),
                     newDateTime);
             appointmentRepository.addAppointment(newAppointment);
         }
         catch(Exception e){
             throw new RuntimeException("Rescheduling Failed. Try Again");
         }
+        return newAppointment;
     }
 }
 
