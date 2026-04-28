@@ -59,7 +59,7 @@ public class DBAppointmentRepository implements AppointmentRepository {
         }
     }
 
-
+    @Override
     public boolean isSlotAvailable(int doctorId, LocalDateTime dateTime){
         String query = """
         SELECT COUNT(*) AS count FROM appointments 
@@ -81,6 +81,7 @@ public class DBAppointmentRepository implements AppointmentRepository {
         return false;
     }
 
+    @Override
     public ArrayList<Appointment> getAllAppointmentsOf(int doctorId){
         ArrayList<Appointment> allAppointments= new ArrayList<>();
         String query= """
@@ -146,17 +147,15 @@ public class DBAppointmentRepository implements AppointmentRepository {
 
     @Override
     public boolean appointmentExists(int doctorId, int appointmentId) {
-        return false;
-    }
-
-   // @Override
-   /* public boolean appointmentExists(int doctorId, int patientId, LocalDateTime dateTime) {
-        String query = "SELECT COUNT(*) FROM appointments WHERE doctor_id=? AND patient_id=? AND date_time=? AND status='BOOKED ";
+        String query = """
+        SELECT COUNT(*) FROM appointments 
+        WHERE doctor_id=? AND appointment_id=? 
+        AND status=BOOKED
+        """;
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, doctorId);
-            ps.setInt(2, patientId);
-            ps.setTimestamp(3, Timestamp.valueOf(dateTime));
+            ps.setInt(2, appointmentId);
             ResultSet res=ps.executeQuery();
             if (res.next()){
                 if(res.getInt(1)>0) return true;
@@ -167,8 +166,8 @@ public class DBAppointmentRepository implements AppointmentRepository {
             System.err.println("Msg  : " + e.getMessage());
         }
         return false;
-    }*/
-
+    }
+    /*
     @Override
     public boolean hasAppointmentOnDay(int doctorId, int patientId, LocalDate date) {
         String query="""
@@ -211,8 +210,38 @@ public class DBAppointmentRepository implements AppointmentRepository {
         }
         return null;
     }
+
+ */
     @Override
     public Appointment getAppointmentById(int doctorId, int appointmentId){
+        String query= """
+                SELECT a.appointment_id,a.doctor_id,a.patient_id,
+                p.patient_name,a.date_time,
+                a.status FROM patients p 
+                INNER JOIN appointments a on p.id=a.patient_id 
+                WHERE a.doctor_id=? AND a.appointment_id=?
+                """;
+        try(Connection conn= DatabaseConnection.getConnection();
+            PreparedStatement ps= conn.prepareStatement(query)){
+            ps.setInt(1,doctorId);
+            ps.setInt(2,appointmentId);
+            ResultSet rs=ps.executeQuery();
+
+            if(rs.next()) {
+                return new Appointment(
+                        rs.getInt("appointment_id"),
+                        rs.getInt("doctor_id"),
+                        rs.getInt("patient_id"),
+                        rs.getString("patient_name"),
+                        rs.getTimestamp("date_time").toLocalDateTime(),
+                        Appointment.Status.valueOf(rs.getString("status"))
+                );
+            }
+        }catch(SQLException e){
+            System.err.println("State: " + e.getSQLState());
+            System.err.println("Code : " + e.getErrorCode());
+            System.err.println("Msg  : " + e.getMessage());
+        }
         return null;
-    };
+    }
 }
