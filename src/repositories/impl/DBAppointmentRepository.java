@@ -27,14 +27,35 @@ public class DBAppointmentRepository implements AppointmentRepository {
             int res=ps.executeUpdate();
             if (res == 1) {
                 appointment.setStatus(Appointment.Status.BOOKED);
-            } else {
-                appointment.setStatus(Appointment.Status.CANCELLED);
             }
         } catch (SQLException e) {
             System.err.println("State: " + e.getSQLState());
             System.err.println("Code : " + e.getErrorCode());
             System.err.println("Msg  : " + e.getMessage());
 
+        }
+    }
+
+    @Override
+    public Appointment.Status cancelAppointment(int doctorId, int appointmentId) {
+        //Soft Deletion
+        String query = """
+        UPDATE appointments SET status = 'CANCELLED' 
+        WHERE doctor_id = ? AND appointment_id = ?
+        and status='BOOKED'
+        """;
+        try(Connection conn= DatabaseConnection.getConnection();
+            PreparedStatement ps=conn.prepareStatement(query)){
+            ps.setInt(1,doctorId);
+            ps.setInt(2,appointmentId);
+            int res=ps.executeUpdate();
+            if(res>0) return Appointment.Status.CANCELLED;
+            else return Appointment.Status.BOOKED;
+        } catch (SQLException e) {
+            System.err.println("State: " + e.getSQLState());
+            System.err.println("Code : " + e.getErrorCode());
+            System.err.println("Msg  : " + e.getMessage());
+            return Appointment.Status.BOOKED;
         }
     }
 
@@ -62,7 +83,10 @@ public class DBAppointmentRepository implements AppointmentRepository {
     }
 
     public boolean isSlotAvailable(int doctorId, LocalDateTime dateTime){
-        String query = "SELECT COUNT(*) AS count FROM appointments WHERE doctor_id=? AND date_time = ? AND status='BOOKED";
+        String query = """
+        SELECT COUNT(*) AS count FROM appointments 
+        WHERE doctor_id=? AND date_time = ? AND status=BOOKED
+        """;
         try(Connection conn = DatabaseConnection.getConnection();
         PreparedStatement ps= conn.prepareStatement(query)){
             ps.setInt(1,doctorId);
@@ -141,7 +165,12 @@ public class DBAppointmentRepository implements AppointmentRepository {
     }
 
     @Override
-    public boolean appointmentExists(int doctorId, int patientId, LocalDateTime dateTime) {
+    public boolean appointmentExists(int doctorId, int appointmentId) {
+        return false;
+    }
+
+   // @Override
+   /* public boolean appointmentExists(int doctorId, int patientId, LocalDateTime dateTime) {
         String query = "SELECT COUNT(*) FROM appointments WHERE doctor_id=? AND patient_id=? AND date_time=? AND status='BOOKED ";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
@@ -158,7 +187,7 @@ public class DBAppointmentRepository implements AppointmentRepository {
             System.err.println("Msg  : " + e.getMessage());
         }
         return false;
-    }
+    }*/
 
     @Override
     public boolean hasAppointmentOnDay(int doctorId, int patientId, LocalDate date) {
@@ -202,4 +231,8 @@ public class DBAppointmentRepository implements AppointmentRepository {
         }
         return null;
     }
+    @Override
+    public Appointment getAppointmentById(int doctorId, int appointmentId){
+        return null;
+    };
 }
