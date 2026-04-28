@@ -19,7 +19,7 @@ public class Main {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Select Storage aMode:");
+        System.out.println("Select Storage Mode:");
         System.out.println("1. Database");
         System.out.println("2. In-Memory");
         System.out.print("Enter choice: ");
