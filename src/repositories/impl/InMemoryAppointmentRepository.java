@@ -52,12 +52,6 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         }
         return true;
     }
-    @Override
-    public List<Appointment> getAllAppointmentsOf(int doctorId){
-        TreeMap<Integer, Appointment> doctorMap = appointments.get(doctorId);
-        List<Appointment> result = new ArrayList<>(doctorMap.values());
-        return result;
-    }
 
     @Override
     public List<Appointment> getAllAppointments() {
@@ -67,13 +61,7 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         }
         return result;
     }
-    @Override
-    public boolean appointmentExists(int doctorId, int appointmentId) {
-        TreeMap<Integer,Appointment> doctorMap = appointments.get(doctorId);
-        if(doctorMap == null) return false;
-        Appointment a = doctorMap.get(appointmentId);
-        return a != null;
-    }
+
     @Override
     public boolean hasAppointmentOnDay(int doctorId, int patientId, LocalDate date) {
         TreeMap<Integer, Appointment> schedule = appointments.get(doctorId);
@@ -83,14 +71,6 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
                     && a.getDateTime().toLocalDate().equals(date)) return true;
         }
         return false;
-    }
-    @Override
-    public Appointment getPatientAppointment(int doctorId, int patientId){
-         Appointment appointment= getAllAppointmentsOf(doctorId).get(patientId);
-         if(appointment==null){
-             throw new NoSuchElementException("No Appointment Exist");
-         }
-        return appointment;
     }
 
     @Override

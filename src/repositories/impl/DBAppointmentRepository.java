@@ -82,38 +82,6 @@ public class DBAppointmentRepository implements AppointmentRepository {
     }
 
     @Override
-    public ArrayList<Appointment> getAllAppointmentsOf(int doctorId){
-        ArrayList<Appointment> allAppointments= new ArrayList<>();
-        String query= """
-                SELECT a.doctor_id,a.patient_id,
-                p.patient_name,a.date_time,
-                a.status FROM patients p 
-                INNER JOIN appointments a on p.id=a.patient_id 
-                WHERE doctor_id= ? 
-                ORDER BY a.date_time
-                """;
-        try(Connection conn= DatabaseConnection.getConnection();
-        PreparedStatement ps= conn.prepareStatement(query)){
-            ps.setInt(1,doctorId);
-            ResultSet rs=ps.executeQuery();
-
-            while(rs.next()) {
-                allAppointments.add(new Appointment(rs.getInt("doctor_id"),
-                        rs.getInt("patient_id"),
-                        rs.getString("patient_name"),
-                        rs.getTimestamp("date_time").toLocalDateTime(),
-                        Appointment.Status.valueOf(rs.getString("status")))
-                );
-            }
-        }catch(SQLException e){
-            System.err.println("State: " + e.getSQLState());
-            System.err.println("Code : " + e.getErrorCode());
-            System.err.println("Msg  : " + e.getMessage());
-        }
-        return allAppointments;
-    }
-
-    @Override
     public List<Appointment> getAllAppointments() {
         List<Appointment> allAppointments = new ArrayList<>();
         String query= """
@@ -145,28 +113,6 @@ public class DBAppointmentRepository implements AppointmentRepository {
         return allAppointments;
     }
 
-    @Override
-    public boolean appointmentExists(int doctorId, int appointmentId) {
-        String query = """
-        SELECT COUNT(*) FROM appointments 
-        WHERE doctor_id=? AND appointment_id=? 
-        AND status=BOOKED
-        """;
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setInt(1, doctorId);
-            ps.setInt(2, appointmentId);
-            ResultSet res=ps.executeQuery();
-            if (res.next()){
-                if(res.getInt(1)>0) return true;
-            }
-        }catch(SQLException e) {
-            System.err.println("State: " + e.getSQLState());
-            System.err.println("Code : " + e.getErrorCode());
-            System.err.println("Msg  : " + e.getMessage());
-        }
-        return false;
-    }
     /*
     @Override
     public boolean hasAppointmentOnDay(int doctorId, int patientId, LocalDate date) {
