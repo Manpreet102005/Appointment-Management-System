@@ -63,7 +63,7 @@ public class DBAppointmentRepository implements AppointmentRepository {
     public boolean isSlotAvailable(int doctorId, LocalDateTime dateTime){
         String query = """
         SELECT COUNT(*) AS count FROM appointments 
-        WHERE doctor_id=? AND date_time = ? AND status=BOOKED
+        WHERE doctor_id=? AND date_time = ? AND status='BOOKED'
         """;
         try(Connection conn = DatabaseConnection.getConnection();
         PreparedStatement ps= conn.prepareStatement(query)){
