@@ -59,28 +59,6 @@ public class DBAppointmentRepository implements AppointmentRepository {
         }
     }
 
-    public Appointment.Status cancelAppointment(int doctorId, int patientId, LocalDate date){
-        //Soft Deletion
-        String query = """
-        UPDATE appointments SET status = 'CANCELLED' 
-        WHERE doctor_id = ? AND patient_id = ? AND DATE(date_time) = ? 
-        and status='BOOKED'
-        """;
-        try(Connection conn= DatabaseConnection.getConnection();
-        PreparedStatement ps=conn.prepareStatement(query)){
-            ps.setInt(1,doctorId);
-            ps.setInt(2,patientId);
-            ps.setDate(3,Date.valueOf(date));
-            int res=ps.executeUpdate();
-            if(res>0) return Appointment.Status.CANCELLED;
-            else return Appointment.Status.BOOKED;
-        } catch (SQLException e) {
-            System.err.println("State: " + e.getSQLState());
-            System.err.println("Code : " + e.getErrorCode());
-            System.err.println("Msg  : " + e.getMessage());
-            return Appointment.Status.BOOKED;
-        }
-    }
 
     public boolean isSlotAvailable(int doctorId, LocalDateTime dateTime){
         String query = """
@@ -138,7 +116,7 @@ public class DBAppointmentRepository implements AppointmentRepository {
     public List<Appointment> getAllAppointments() {
         List<Appointment> allAppointments = new ArrayList<>();
         String query= """
-                SELECT a.doctor_id,a.patient_id,
+                SELECT a.appointment_id,a.doctor_id,a.patient_id,
                 p.patient_name,a.date_time,
                 a.status FROM patients p 
                 INNER JOIN appointments a on p.id=a.patient_id 
@@ -149,7 +127,9 @@ public class DBAppointmentRepository implements AppointmentRepository {
             ResultSet rs=ps.executeQuery();
 
             while(rs.next()) {
-                allAppointments.add(new Appointment(rs.getInt("doctor_id"),
+                allAppointments.add(new Appointment(
+                        rs.getInt("appointment_id"),
+                        rs.getInt("doctor_id"),
                         rs.getInt("patient_id"),
                         rs.getString("patient_name"),
                         rs.getTimestamp("date_time").toLocalDateTime(),

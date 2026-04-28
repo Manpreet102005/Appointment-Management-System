@@ -28,6 +28,14 @@ public class Appointment {
         this.dateTime=dateTime;
         this.status=status;
     }
+    public Appointment(int appointmentId,int doctorId,int patientId,String patientName,LocalDateTime dateTime, Status status){
+        this.appointmentId=appointmentId;
+        this.doctorId=doctorId;
+        this.patientId=patientId;
+        this.patientName=patientName;
+        this.dateTime=dateTime;
+        this.status=status;
+    }
 
     public int getPatientId(){
         return patientId;
