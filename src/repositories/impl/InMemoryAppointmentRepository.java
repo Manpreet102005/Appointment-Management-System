@@ -62,7 +62,6 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         return result;
     }
 
-    @Override
     public boolean hasAppointmentOnDay(int doctorId, int patientId, LocalDate date) {
         TreeMap<Integer, Appointment> schedule = appointments.get(doctorId);
         if (schedule == null) return false;
