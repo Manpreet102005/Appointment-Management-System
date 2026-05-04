@@ -62,7 +62,7 @@ public class Appointment {
     @Override
     public String toString() {
         return String.format(
-                "appointmentId: %d | doctorId: %d | patientId: %d | patientName: %s | dateTime: %s | status: %s",
+                "Appointment Id: %d | Doctor Id: %d | Patient Id: %d | Patient Name: %s | DateTime: %s | Status: %s",
                 appointmentId,
                 doctorId,
                 patientId,
