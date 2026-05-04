@@ -30,3 +30,6 @@ bin/
 
 .idea/
 **/env.properties
+*.iml
+target/
+*.class
