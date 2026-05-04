@@ -58,7 +58,39 @@ public class DBAppointmentRepository implements AppointmentRepository {
             return Appointment.Status.BOOKED;
         }
     }
+    @Override
+    public Appointment rescheduleAppointment(int doctorId,int appointmentId,LocalDateTime newDateTime){
+        String query = """
+        UPDATE appointments
+        SET date_time = ?,
+        WHERE appointment_id = ?
+        AND status != 'CANCELLED'
+        AND NOT EXISTS (
+            SELECT 1 FROM appointments
+            WHERE doctor_id = ?
+            AND date_time = ?
+            AND status = 'BOOKED'
+            AND appointment_id != ?
+        )
+        """;
+        try(Connection conn= DatabaseConnection.getConnection();
+            PreparedStatement ps=conn.prepareStatement(query)){
+            ps.setTimestamp(1, Timestamp.valueOf(newDateTime));
+            ps.setInt(2, appointmentId);
+            ps.setInt(3,doctorId);
+            ps.setTimestamp(4, Timestamp.valueOf(newDateTime));
+            ps.setInt(5, appointmentId);
 
+            int res=ps.executeUpdate();
+            if(res==1) return getAppointmentById(doctorId,appointmentId);
+
+        } catch (SQLException e) {
+            System.err.println("State: " + e.getSQLState());
+            System.err.println("Code : " + e.getErrorCode());
+            System.err.println("Msg  : " + e.getMessage());
+        }
+        return null;
+    }
     @Override
     public boolean isSlotAvailable(int doctorId, LocalDateTime dateTime){
         String query = """

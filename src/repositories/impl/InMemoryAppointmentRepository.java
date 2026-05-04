@@ -44,6 +44,23 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         }
     }
     @Override
+    public Appointment rescheduleAppointment(int doctorId,int appointmentId,LocalDateTime newDateTime){
+        if (appointments.get(doctorId).get(appointmentId).getStatus() == Appointment.Status.CANCELLED) {
+            throw new IllegalStateException("Cannot reschedule cancelled appointment");
+        }
+        TreeMap<Integer,Appointment> doctorAppointments =appointments.get(doctorId);
+        for (Appointment a :doctorAppointments.values()) {
+            if (a.getDateTime().equals(newDateTime)
+                    && a.getAppointmentId()!=appointmentId
+                    && a.getStatus()==Appointment.Status.BOOKED) {
+                throw new IllegalStateException("Slot already booked");
+            }
+        }
+        Appointment appointment = appointments.get(doctorId).get(appointmentId);
+        appointment.setDateTime(newDateTime);
+        return appointment;
+    }
+    @Override
     public boolean isSlotAvailable(int doctorId, LocalDateTime dateTime){
         TreeMap<Integer,Appointment> schedule=appointments.get(doctorId);
         if(schedule == null) return true;

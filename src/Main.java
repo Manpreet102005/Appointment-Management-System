@@ -71,8 +71,8 @@ public class Main {
                         System.out.print("Enter Specialization: ");
                         String dSpec = sc.nextLine();
 
-                        boolean dAddStatus=service.addDoctor(dId, dName, dSpec);
-                        if(dAddStatus) System.out.println("Doctor Added successfully!");
+                        boolean dAddStatus = service.addDoctor(dId, dName, dSpec);
+                        if (dAddStatus) System.out.println("Doctor Added successfully!");
                         else System.out.println("Failed to add doctor. Please try again!");
                         break;
 
@@ -84,8 +84,8 @@ public class Main {
                         System.out.print("Enter Patient Name: ");
                         String pName = sc.nextLine();
 
-                        boolean pAddStatus=service.addPatient(pId, pName);
-                        if(pAddStatus) System.out.println("Patient added successfully!");
+                        boolean pAddStatus = service.addPatient(pId, pName);
+                        if (pAddStatus) System.out.println("Patient added successfully!");
                         else System.out.println("Failed to add patient. Please try again!");
                         break;
 
@@ -135,10 +135,6 @@ public class Main {
                         int docId = sc.nextInt();
                         sc.nextLine();
 
-                        System.out.print("Enter Patient ID: ");
-                        int patId = sc.nextInt();
-                        sc.nextLine();
-
                         System.out.print("Enter Appointment ID: ");
                         int appId = sc.nextInt();
                         sc.nextLine();
@@ -152,12 +148,13 @@ public class Main {
                         } catch (DateTimeParseException e) {
                             throw new IllegalStateException("Invalid date-time format. Please use yyyy-MM-dd HH:mm");
                         }
-                        try {
-                            Appointment a = service.reScheduleAppointment(docId, patId, appId, newDateTime);
-                            System.out.println("Appointment Rescheduled Successfully. New appointment id: " + a.getAppointmentId());
-                        }catch(Exception e) {
+
+                        Appointment a = service.reScheduleAppointment(docId, appId, newDateTime);
+                        if(a!=null){
+                        System.out.println("Appointment Rescheduled Successfully. New DateTime : " + a.getDateTime());
+                        }
+                        else {
                             System.out.println("Rescheduling Failed. Try Again");
-                            System.out.println(e.getMessage());
                         }
                         break;
 

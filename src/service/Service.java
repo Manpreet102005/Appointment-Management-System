@@ -79,40 +79,20 @@ public class Service {
         return appointmentRepository.cancelAppointment(doctorId,appointmentId);
     }
 
-    public Appointment reScheduleAppointment(int doctorId,int patientId,int appointmentId,LocalDateTime newDateTime){
+    public Appointment reScheduleAppointment(int doctorId,int appointmentId,LocalDateTime newDateTime){
         Doctor doctor=doctorRepository.getDoctor(doctorId);
 
         if(doctor==null) {
             throw new NoSuchElementException("Doctor Not Found");
         }
-        Appointment oldAppointment =appointmentRepository.getAppointmentById(doctorId,appointmentId);
-        if (oldAppointment==null) {
+
+        Appointment appointment =appointmentRepository.getAppointmentById(doctorId,appointmentId);
+        if (appointment==null) {
             throw new NoSuchElementException("No scheduled appointment");
         }
 
-        if(oldAppointment.getPatientId()!=patientId){
-            throw new IllegalArgumentException("Patient mismatch");
-        }
-
-        if (oldAppointment.getDateTime().equals(newDateTime)) {
-            throw new IllegalArgumentException("New time cannot be same as old time");
-        }
-
-        if (!appointmentRepository.isSlotAvailable(doctorId, newDateTime)) {
-            throw new IllegalStateException("Slot already booked at " + newDateTime);
-        }
-        Appointment newAppointment;
-        try {
-            appointmentRepository.cancelAppointment(doctorId, appointmentId);
-
-            newAppointment = new Appointment(doctorId, patientId, oldAppointment.getPatientName(),
-                    newDateTime);
-            appointmentRepository.addAppointment(newAppointment);
-        }
-        catch(Exception e){
-            throw new RuntimeException("Rescheduling Failed. Try Again");
-        }
-        return newAppointment;
+        Appointment rescheduledAppointment=appointmentRepository.rescheduleAppointment(doctorId,appointmentId,newDateTime);
+        return rescheduledAppointment;
     }
 }
 

@@ -11,6 +11,8 @@ public interface AppointmentRepository {
 
      Appointment.Status cancelAppointment(int doctorId, int appointmentId);
 
+     Appointment rescheduleAppointment(int doctorId,int appointmentId,LocalDateTime newDateTime);
+
      boolean isSlotAvailable(int doctorId, LocalDateTime dateTime);
 
      List<Appointment> getAllAppointments();
