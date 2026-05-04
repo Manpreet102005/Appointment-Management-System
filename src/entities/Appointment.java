@@ -11,7 +11,7 @@ public class Appointment {
     private final int doctorId;
     private final int patientId;
     private final String patientName;
-    private final LocalDateTime dateTime;
+    private  LocalDateTime dateTime;
     private Status status;
 
     public Appointment(int doctorId,int patientId,String patientName,LocalDateTime dateTime){
@@ -49,6 +49,7 @@ public class Appointment {
     public LocalDateTime getDateTime(){
         return dateTime;
     }
+    public void setDateTime(LocalDateTime dateTime) {this.dateTime = dateTime;}
     public Status getStatus(){
         return status;
     }
@@ -57,6 +58,7 @@ public class Appointment {
     }
     public int getAppointmentId() { return appointmentId;}
     public void setAppointmentId(int appointmentId) { this.appointmentId = appointmentId;}
+
     @Override
     public String toString() {
         return String.format(
