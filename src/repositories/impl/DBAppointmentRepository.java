@@ -89,6 +89,7 @@ public class DBAppointmentRepository implements AppointmentRepository {
                 p.patient_name,a.date_time,
                 a.status FROM patients p 
                 INNER JOIN appointments a on p.id=a.patient_id 
+                WHERE a.status='BOOKED'
                 ORDER BY a.date_time
                 """;
         try(Connection conn= DatabaseConnection.getConnection();

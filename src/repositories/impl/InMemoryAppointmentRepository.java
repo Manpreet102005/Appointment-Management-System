@@ -57,7 +57,11 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
     public List<Appointment> getAllAppointments() {
         List<Appointment> result = new ArrayList<>();
         for(TreeMap<Integer, Appointment> doctorMap : appointments.values()) {
-            result.addAll(doctorMap.values());
+            for(Appointment appointment:doctorMap.values()){
+                if(appointment.getStatus().equals(Appointment.Status.BOOKED)){
+                    result.add(appointment);
+                }
+            }
         }
         return result;
     }
