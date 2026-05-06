@@ -11,11 +11,11 @@ public class InMemoryDoctorRepository implements DoctorRepository {
     private static int doctorId = 0;
     ConcurrentHashMap<Integer, Doctor> doctors=new ConcurrentHashMap<>();
 
-    public synchronized boolean addDoctor(Doctor doctor){
+    public synchronized Doctor addDoctor(Doctor doctor){
         doctorId++;
         doctor.setId(doctorId);
         doctors.put(doctor.getId(),doctor);
-        return true;
+        return doctor;
     }
     public synchronized boolean removeDoctor(int id){
         if(!doctors.containsKey(id)){

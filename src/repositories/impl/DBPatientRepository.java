@@ -8,19 +8,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBPatientRepository implements PatientRepository {
-    public boolean addPatient(Patient patient){
-        String query="INSERT INTO patients (patient_name) VALUES (?)";
+    public Patient addPatient(Patient patient){
+        String query="INSERT INTO patients (patient_name,phone_no,gender,blood_group) VALUES (?,?,?,?)";
         try(Connection conn= DatabaseConnection.getConnection();
-            PreparedStatement ps= conn.prepareStatement(query)){
+            PreparedStatement ps= conn.prepareStatement(query,Statement.RETURN_GENERATED_KEYS)){
             ps.setString(1,patient.getFullName());
-            int rows=ps.executeUpdate();
-            return rows==1;
+            ps.setString(2,patient.getPhoneNo());
+            ps.setString(3, String.valueOf(patient.getGender()));
+            ps.setString(4,patient.getBloodGroup());
+            ps.executeUpdate();
+            ResultSet rs=ps.getGeneratedKeys();
+            if(rs.next()){
+                patient.setId(rs.getInt(1));
+                return patient;
+            }
         } catch (SQLException e) {
             System.err.println("State: " + e.getSQLState());
             System.err.println("Code : " + e.getErrorCode());
             System.err.println("Msg  : " + e.getMessage());
-            return false;
         }
+        return null;
     }
     public List<Patient> getAllPatients() {
         List<Patient> list= new ArrayList<>();
@@ -29,7 +36,11 @@ public class DBPatientRepository implements PatientRepository {
              PreparedStatement ps = conn.prepareStatement(query)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(new Patient(rs.getInt("id"), rs.getString("patient_name")));
+                list.add(new Patient(rs.getInt("id"),
+                        rs.getString("patient_name"),
+                        rs.getString("phone_no"),
+                        (rs.getString("gender")).charAt(0),
+                        rs.getString("blood_group")));
             }
         } catch (SQLException e) {
             System.err.println("State: " + e.getSQLState());
@@ -47,7 +58,11 @@ public class DBPatientRepository implements PatientRepository {
             ps.setInt(1,id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                patient = new Patient(rs.getInt("id"), rs.getString("patient_name"));
+                patient = new Patient(rs.getInt("id"), 
+                        rs.getString("patient_name"),
+                        rs.getString("phone_no"),
+                        (rs.getString("gender")).charAt(0),
+                        rs.getString("blood_group"));
             }
         } catch (SQLException e) {
             System.err.println("State: " + e.getSQLState());

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AppointmentRepository {
-     void addAppointment(Appointment appointment);
+     Appointment addAppointment(Appointment appointment);
 
      Appointment.Status cancelAppointment(int doctorId, int appointmentId);
 

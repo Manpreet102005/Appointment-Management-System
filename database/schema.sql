@@ -3,14 +3,17 @@ USE appointment_db;
 
 CREATE TABLE IF NOT EXISTS patients (
      id INT PRIMARY KEY AUTO_INCREMENT,
-     patient_name VARCHAR(20) NOT NULL
-);
+     patient_name VARCHAR(20) NOT NULL,
+     phone_no VARCHAR(10) NOT NULL,
+     gender CHAR(1) CHECK (gender IN ('M', 'F', 'O')) NOT NULL,
+     blood_group VARCHAR(3) CHECK (blood_group IN ('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'))
+) AUTO_INCREMENT=1;
 
 CREATE TABLE IF NOT EXISTS doctors (
     doctor_id INT PRIMARY KEY AUTO_INCREMENT,
     doctor_name VARCHAR(20) NOT NULL ,
     specialisation VARCHAR(20)
-);
+) AUTO_INCREMENT=1;
 
 CREATE TABLE IF NOT EXISTS appointments (
     appointment_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -20,9 +23,10 @@ CREATE TABLE IF NOT EXISTS appointments (
     status VARCHAR(9) CHECK (status IN ('BOOKED', 'CANCELLED')),
     FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE,
     FOREIGN KEY (doctor_id)  REFERENCES doctors(doctor_id) ON DELETE CASCADE
-);
-
+) AUTO_INCREMENT=1;
+#Future Purpose
 CREATE TABLE IF NOT EXISTS authorised_users (
     username VARCHAR(20) PRIMARY KEY,
     password VARCHAR(20) NOT NULL
-);
+) ;
+

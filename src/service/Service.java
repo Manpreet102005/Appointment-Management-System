@@ -3,12 +3,8 @@ package service;
 import entities.Appointment;
 import entities.Doctor;
 import entities.Patient;
-import entities.Person;
 import repositories.*;
 import validations.PersonValidation;
-
-import java.sql.Date;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
@@ -25,16 +21,19 @@ public class Service {
         this.doctorRepository=doctorRepository;
         this.patientRepository=patientRepository;
     }
-    public boolean addDoctor(String fullName, String specialization){
-        PersonValidation.validate(fullName);
+    public Doctor addDoctor(String fullName, String specialization){
+        PersonValidation.validateName(fullName);
         return doctorRepository.addDoctor(new Doctor(fullName, specialization));
     }
 
-    public boolean addPatient(String fullName){
-        PersonValidation.validate(fullName);
-        return patientRepository.addPatient(new Patient(fullName));
+    public Patient addPatient(String fullName,String phoneNo,char gender, String bloodGroup){
+        PersonValidation.validateName(fullName);
+        PersonValidation.validatePhoneNo(phoneNo);
+        PersonValidation.validateGender(gender);
+        PersonValidation.validateBloodGroup(bloodGroup);
+        return patientRepository.addPatient(new Patient(fullName,phoneNo,gender,bloodGroup));
     }
-    public Appointment.Status addAppointment(int doctorId, LocalDateTime dateTime, int patientId){
+    public Appointment addAppointment(int doctorId, LocalDateTime dateTime, int patientId){
         Patient patient = patientRepository.getPatient(patientId);
 
         if (patient == null) {
@@ -62,7 +61,7 @@ public class Service {
         Appointment appointment=new Appointment(doctorId,patientId, patient.getFullName(), dateTime);
 
         appointmentRepository.addAppointment(appointment);
-        return appointment.getStatus();
+        return appointment;
     }
 
     public Appointment.Status cancelAppointment(int doctorId, int appointmentId) {

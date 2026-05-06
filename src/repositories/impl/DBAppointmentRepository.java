@@ -14,19 +14,22 @@ import java.util.List;
 
 public class DBAppointmentRepository implements AppointmentRepository {
     @Override
-    public void addAppointment(Appointment appointment){
+    public Appointment addAppointment(Appointment appointment){
         String query = "INSERT INTO appointments (doctor_id, patient_id, date_time, status) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+             PreparedStatement ps = conn.prepareStatement(query,Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, appointment.getDoctorId());
             ps.setInt(2, appointment.getPatientId());
             ps.setTimestamp(3, Timestamp.valueOf(appointment.getDateTime()));
             ps.setString(4, Appointment.Status.BOOKED.name());
-            int res=ps.executeUpdate();
-            if (res == 1) {
+            ps.executeUpdate();
+            ResultSet rs= ps.getGeneratedKeys();
+            if(rs.next()){
+                appointment.setAppointmentId(rs.getInt(1));
                 appointment.setStatus(Appointment.Status.BOOKED);
+                return appointment;
             }
         } catch (SQLException e) {
             System.err.println("State: " + e.getSQLState());
@@ -34,6 +37,7 @@ public class DBAppointmentRepository implements AppointmentRepository {
             System.err.println("Msg  : " + e.getMessage());
 
         }
+        return null;
     }
 
     @Override

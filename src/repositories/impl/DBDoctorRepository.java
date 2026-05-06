@@ -4,28 +4,29 @@ import entities.Doctor;
 import repositories.DoctorRepository;
 import util.DatabaseConnection;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DBDoctorRepository implements DoctorRepository {
-    public boolean addDoctor(Doctor doctor){
+    public Doctor addDoctor(Doctor doctor){
         String query="INSERT INTO doctors (doctor_name,specialisation) VALUES (?,?)";
         try(Connection conn= DatabaseConnection.getConnection();
-            PreparedStatement ps= conn.prepareStatement(query)){
+            PreparedStatement ps= conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
             ps.setString(1,doctor.getFullName());
             ps.setString(2,doctor.getSpecialization());
-            int rows=ps.executeUpdate();
-            return rows==1;
+            ps.executeUpdate();
+            ResultSet rs =ps.getGeneratedKeys();
+            if(rs.next()){
+                doctor.setId(rs.getInt(1));
+                return doctor;
+            }
         } catch (SQLException e) {
             System.err.println("State: " + e.getSQLState());
             System.err.println("Code : " + e.getErrorCode());
             System.err.println("Msg  : " + e.getMessage());
-            return false;
         }
+        return null;
     }
     public boolean removeDoctor(int id){
         String query= "DELETE FROM doctors WHERE doctor_id=?";

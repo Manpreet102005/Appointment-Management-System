@@ -81,8 +81,8 @@ public class Main {
                         System.out.print("Enter Specialization: ");
                         String dSpec = sc.nextLine();
 
-                        boolean dAddStatus = service.addDoctor(dName, dSpec);
-                        if (dAddStatus) System.out.println("Doctor Added successfully!");
+                        Doctor doctor = service.addDoctor(dName, dSpec);
+                        if (doctor!=null) System.out.println("Doctor Added successfully!. Doctor ID: " + doctor.getId());
                         else System.out.println("Failed to add doctor. Please try again!");
                         break;
 
@@ -90,8 +90,18 @@ public class Main {
                         System.out.print("Enter Patient Name: ");
                         String pName = sc.nextLine();
 
-                        boolean pAddStatus = service.addPatient(pName);
-                        if (pAddStatus) System.out.println("Patient added successfully!");
+                        System.out.print("Enter Patient Phone No: ");
+                        String pPhoneNo = sc.nextLine();
+
+                        System.out.print("Enter Patient Gender (M/F/O): ");
+                        char pGender = sc.next().charAt(0);
+                        sc.nextLine();
+
+                        System.out.print("Enter Patient Blood Group: ");
+                        String pBloodGroup = sc.nextLine();
+
+                        Patient patient = service.addPatient(pName, pPhoneNo, pGender, pBloodGroup);
+                        if (patient!=null) System.out.println("Patient added successfully!. Patient ID: " + patient.getId());
                         else System.out.println("Failed to add patient. Please try again!");
                         break;
 
@@ -114,10 +124,10 @@ public class Main {
                             throw new IllegalStateException("Invalid date-time format. Please use yyyy-MM-dd HH:mm");
                         }
 
-                        Appointment.Status bookingStatus = service.addAppointment(bookDocId, appDateTime, bookPatId);
+                        Appointment appointment = service.addAppointment(bookDocId, appDateTime, bookPatId);
 
-                        if (bookingStatus.equals(Appointment.Status.BOOKED))
-                            System.out.println("Appointment booked successfully!");
+                        if (appointment!=null && appointment.getStatus().equals(Appointment.Status.BOOKED))
+                            System.out.println("Appointment booked successfully!. Appointment ID: " + appointment.getAppointmentId());
                         else System.out.println("Appointment Booking Failed. Try Again");
                         break;
 

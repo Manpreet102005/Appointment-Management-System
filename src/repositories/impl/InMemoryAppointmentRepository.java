@@ -15,7 +15,7 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
     private static int appointmentId=0;
     ConcurrentHashMap<Integer, TreeMap<Integer, Appointment>> appointments=new ConcurrentHashMap<>();
     @Override
-    public void addAppointment(Appointment appointment){
+    public Appointment addAppointment(Appointment appointment){
         appointments.putIfAbsent(appointment.getDoctorId(),new TreeMap<>());
         TreeMap<Integer,Appointment> schedule=appointments.get(appointment.getDoctorId());
 
@@ -25,6 +25,7 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
             appointment.setStatus(Appointment.Status.BOOKED);
             schedule.put(appointment.getAppointmentId(),appointment);
         }
+        return appointment;
     }
     @Override
     public Appointment.Status cancelAppointment(int doctorId, int appointmentId){
