@@ -19,16 +19,12 @@ public class PersonValidation {
         }
 
     }
-    public static void validate(Person person){
-        if(person==null){
-            throw new IllegalArgumentException("Person can not be null");
-        }
-        if(person.getFullName()==null || person.getFullName().trim().isEmpty()){
+    public static void validate(String name){
+
+        if(name==null || name.trim().isEmpty()){
             throw new IllegalArgumentException("Name can not be empty.");
         }
-        isAlphabetsOnly(person.getFullName());
-        if(person.getId()<=0){
-            throw new IllegalArgumentException("Id can not be negative.");
-        }
+        isAlphabetsOnly(name);
+
     }
 }

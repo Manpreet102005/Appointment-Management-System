@@ -25,14 +25,14 @@ public class Service {
         this.doctorRepository=doctorRepository;
         this.patientRepository=patientRepository;
     }
-    public boolean addDoctor(int doctorId, String fullName, String specialization){
-        PersonValidation.validate(new Person(doctorId,fullName));
-        return doctorRepository.addDoctor(new Doctor(doctorId,fullName,specialization));
+    public boolean addDoctor(String fullName, String specialization){
+        PersonValidation.validate(fullName);
+        return doctorRepository.addDoctor(new Doctor(fullName, specialization));
     }
 
-    public boolean addPatient(int patientId, String fullName){
-        PersonValidation.validate(new Person(patientId,fullName));
-        return patientRepository.addPatient(new Patient(patientId,fullName));
+    public boolean addPatient(String fullName){
+        PersonValidation.validate(fullName);
+        return patientRepository.addPatient(new Patient(fullName));
     }
     public Appointment.Status addAppointment(int doctorId, LocalDateTime dateTime, int patientId){
         Patient patient = patientRepository.getPatient(patientId);

@@ -8,13 +8,12 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class InMemoryPatientRepository implements PatientRepository {
+    private static int patientId = 0;
     ConcurrentHashMap<Integer, Patient> patients =new ConcurrentHashMap<>();
 
     public synchronized boolean addPatient(Patient patient){
-        if(patients.containsKey(patient.getId())){
-            System.out.println("Patient with this id already exists.");
-            return false;
-        }
+        patientId++;
+        patient.setId(patientId);
         patients.put(patient.getId(), patient);
         return true;
     }

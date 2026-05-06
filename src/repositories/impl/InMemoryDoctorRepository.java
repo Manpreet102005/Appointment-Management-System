@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class InMemoryDoctorRepository implements DoctorRepository {
+    private static int doctorId = 0;
     ConcurrentHashMap<Integer, Doctor> doctors=new ConcurrentHashMap<>();
 
     public synchronized boolean addDoctor(Doctor doctor){
-        if(doctors.containsKey(doctor.getId())){
-            return false;
-        }
+        doctorId++;
+        doctor.setId(doctorId);
         doctors.put(doctor.getId(),doctor);
         return true;
     }

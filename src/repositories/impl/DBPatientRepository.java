@@ -9,11 +9,10 @@ import java.util.List;
 
 public class DBPatientRepository implements PatientRepository {
     public boolean addPatient(Patient patient){
-        String query="INSERT INTO patients (patient_name) VALUES (?,?)";
+        String query="INSERT INTO patients (patient_name) VALUES (?)";
         try(Connection conn= DatabaseConnection.getConnection();
             PreparedStatement ps= conn.prepareStatement(query)){
-            ps.setInt(1,patient.getId());
-            ps.setString(2,patient.getFullName());
+            ps.setString(1,patient.getFullName());
             int rows=ps.executeUpdate();
             return rows==1;
         } catch (SQLException e) {

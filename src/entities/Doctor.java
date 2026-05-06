@@ -7,6 +7,10 @@ public class Doctor extends Person{
         super(id,fullName);
         this.specialization=specialization;
     }
+    public Doctor(String fullName,String specialization){
+        super(fullName);
+        this.specialization=specialization;
+    }
 
     public String getSpecialization(){
         return specialization;

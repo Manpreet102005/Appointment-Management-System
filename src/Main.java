@@ -75,30 +75,22 @@ public class Main {
                 sc.nextLine();
                 switch (choice) {
                     case 1:
-                        System.out.print("Enter Doctor ID: ");
-                        int dId = sc.nextInt();
-                        sc.nextLine();
-
                         System.out.print("Enter Doctor Name: ");
                         String dName = sc.nextLine();
 
                         System.out.print("Enter Specialization: ");
                         String dSpec = sc.nextLine();
 
-                        boolean dAddStatus = service.addDoctor(dId, dName, dSpec);
+                        boolean dAddStatus = service.addDoctor(dName, dSpec);
                         if (dAddStatus) System.out.println("Doctor Added successfully!");
                         else System.out.println("Failed to add doctor. Please try again!");
                         break;
 
                     case 2:
-                        System.out.print("Enter Patient ID: ");
-                        int pId = sc.nextInt();
-                        sc.nextLine();
-
                         System.out.print("Enter Patient Name: ");
                         String pName = sc.nextLine();
 
-                        boolean pAddStatus = service.addPatient(pId, pName);
+                        boolean pAddStatus = service.addPatient(pName);
                         if (pAddStatus) System.out.println("Patient added successfully!");
                         else System.out.println("Failed to add patient. Please try again!");
                         break;
