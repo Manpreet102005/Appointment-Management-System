@@ -9,7 +9,7 @@ import java.util.List;
 
 public class DBPatientRepository implements PatientRepository {
     public boolean addPatient(Patient patient){
-        String query="INSERT INTO patients (id, patient_name) VALUES (?,?)";
+        String query="INSERT INTO patients (patient_name) VALUES (?,?)";
         try(Connection conn= DatabaseConnection.getConnection();
             PreparedStatement ps= conn.prepareStatement(query)){
             ps.setInt(1,patient.getId());

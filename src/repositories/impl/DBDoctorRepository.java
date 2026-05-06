@@ -13,10 +13,9 @@ import java.util.List;
 
 public class DBDoctorRepository implements DoctorRepository {
     public boolean addDoctor(Doctor doctor){
-        String query="INSERT INTO doctors (doctor_id, doctor_name,specialisation) VALUES (?,?,?)";
+        String query="INSERT INTO doctors (doctor_name,specialisation) VALUES (?,?,?)";
         try(Connection conn= DatabaseConnection.getConnection();
             PreparedStatement ps= conn.prepareStatement(query)){
-            ps.setInt(1,doctor.getId());
             ps.setString(2,doctor.getFullName());
             ps.setString(3,doctor.getSpecialization());
             int rows=ps.executeUpdate();
