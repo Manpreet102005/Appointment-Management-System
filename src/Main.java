@@ -19,25 +19,39 @@ public class Main {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Select Storage Mode:");
-        System.out.println("1. Database");
-        System.out.println("2. In-Memory");
-        System.out.print("Enter choice: ");
-        int mode = sc.nextInt();
-        sc.nextLine();
+        DoctorRepository doctorRepository = null;
+        PatientRepository patientRepository = null;
+        AppointmentRepository appointmentRepository = null;
+        int mode=0;
+        boolean validMode=false;
+        while(!validMode){
+            try {
+                System.out.println("Select Storage Mode:");
+                System.out.println("1. Database");
+                System.out.println("2. In-Memory");
+                System.out.print("Enter choice: ");
+                mode = sc.nextInt();
+                sc.nextLine();
 
-        DoctorRepository doctorRepository;
-        PatientRepository patientRepository;
-        AppointmentRepository appointmentRepository;
-
+                if(mode==1 || mode==2){
+                    validMode=true;
+                }
+                else{
+                    System.out.println("Invalid choice. Enter 1 or 2");
+                }
+            } catch(InputMismatchException e){
+                System.out.println("Error: Invalid Input. Please enter 1 or 2.");
+                sc.nextLine();
+            }
+        }
         if(mode == 1) {
-            doctorRepository= new DBDoctorRepository();
-            patientRepository= new DBPatientRepository();
-            appointmentRepository= new DBAppointmentRepository();
-        } else {
-            doctorRepository= new InMemoryDoctorRepository();
-            patientRepository= new InMemoryPatientRepository();
-            appointmentRepository =new InMemoryAppointmentRepository();
+            doctorRepository=new DBDoctorRepository();
+            patientRepository=new DBPatientRepository();
+            appointmentRepository=new DBAppointmentRepository();
+        }else{
+            doctorRepository=new InMemoryDoctorRepository();
+            patientRepository=new InMemoryPatientRepository();
+            appointmentRepository=new InMemoryAppointmentRepository();
         }
 
         Service service=new Service(appointmentRepository,doctorRepository,patientRepository);
@@ -121,10 +135,10 @@ public class Main {
                         sc.nextLine();
 
                         System.out.print("Enter Appointment ID: ");
-                        int cancelPatId = sc.nextInt();
+                        int appId = sc.nextInt();
                         sc.nextLine();
 
-                        Appointment.Status cancellationStatus = service.cancelAppointment(cancelDocId, cancelPatId);
+                        Appointment.Status cancellationStatus = service.cancelAppointment(cancelDocId, appId);
                         if (cancellationStatus.equals(Appointment.Status.CANCELLED))
                             System.out.println("Appointment Cancelled Successfully!");
                         else System.out.println("Appointment Cancellation Failed. Try Again");
@@ -136,7 +150,7 @@ public class Main {
                         sc.nextLine();
 
                         System.out.print("Enter Appointment ID: ");
-                        int appId = sc.nextInt();
+                        int appointmentId = sc.nextInt();
                         sc.nextLine();
 
                         System.out.print("Enter New Time (yyyy-MM-dd HH:mm): ");
@@ -149,7 +163,7 @@ public class Main {
                             throw new IllegalStateException("Invalid date-time format. Please use yyyy-MM-dd HH:mm");
                         }
 
-                        Appointment a = service.reScheduleAppointment(docId, appId, newDateTime);
+                        Appointment a = service.reScheduleAppointment(docId, appointmentId, newDateTime);
                         if(a!=null){
                         System.out.println("Appointment Rescheduled Successfully. New DateTime : " + a.getDateTime());
                         }
