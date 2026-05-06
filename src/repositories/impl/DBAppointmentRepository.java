@@ -66,7 +66,7 @@ public class DBAppointmentRepository implements AppointmentRepository {
         WHERE appointment_id = ?
         AND status != 'CANCELLED'
         AND NOT EXISTS (
-            SELECT 1 FROM appointments
+            SELECT 1 FROM (SELECT * FROM appointments) as temp
             WHERE doctor_id = ?
             AND date_time = ?
             AND status = 'BOOKED'
