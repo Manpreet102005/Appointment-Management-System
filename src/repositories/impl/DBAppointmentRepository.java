@@ -62,7 +62,7 @@ public class DBAppointmentRepository implements AppointmentRepository {
     public Appointment rescheduleAppointment(int doctorId,int appointmentId,LocalDateTime newDateTime){
         String query = """
         UPDATE appointments
-        SET date_time = ?,
+        SET date_time = ?
         WHERE appointment_id = ?
         AND status != 'CANCELLED'
         AND NOT EXISTS (
