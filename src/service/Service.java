@@ -91,6 +91,20 @@ public class Service {
             throw new NoSuchElementException("No scheduled appointment");
         }
 
+        if(newDateTime.isBefore(LocalDateTime.now())){
+            throw new IllegalArgumentException("Appointment can't be rescheduled to past");
+        }
+        LocalDateTime start = LocalDateTime.of(newDateTime.getYear(),newDateTime.getMonth(),newDateTime.getDayOfMonth(),10, 0);
+        LocalDateTime end = LocalDateTime.of(newDateTime.getYear(),newDateTime.getMonth(),newDateTime.getDayOfMonth(),20, 30);
+
+        if (newDateTime.isBefore(start)|| newDateTime.isAfter(end)) {
+            throw new IllegalArgumentException("Working Hours: 10:00 am to 8:30 pm");
+        }
+
+        if(!appointmentRepository.isSlotAvailable(doctorId,newDateTime)){
+            throw new IllegalStateException("Slot already booked");
+        }
+
         Appointment rescheduledAppointment=appointmentRepository.rescheduleAppointment(doctorId,appointmentId,newDateTime);
         return rescheduledAppointment;
     }
