@@ -10,8 +10,9 @@ public class DatabaseConnection {
     public static Connection getConnection() {
         try {
             Properties properties = new Properties();
-            FileInputStream inputStream = new FileInputStream("env.properties");
-            properties.load(inputStream);
+            try (FileInputStream inputStream = new FileInputStream("env.properties")) {
+                properties.load(inputStream);
+            }
 
             String url = properties.getProperty("url");
             String user = properties.getProperty("user");
