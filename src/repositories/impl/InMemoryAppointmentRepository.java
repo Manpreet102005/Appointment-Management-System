@@ -65,7 +65,9 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
         TreeMap<Integer,Appointment> schedule=appointments.get(doctorId);
         if(schedule == null) return true;
         for(Appointment a: schedule.values()){
-            if(a.getDateTime().equals(dateTime)) return false;
+            if(a.getDateTime().equals(dateTime) && a.getStatus() == Appointment.Status.BOOKED) {
+                return false;
+            }
         }
         return true;
     }
