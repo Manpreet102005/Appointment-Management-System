@@ -24,6 +24,10 @@ CREATE TABLE IF NOT EXISTS appointments (
     FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE,
     FOREIGN KEY (doctor_id)  REFERENCES doctors(doctor_id) ON DELETE CASCADE
 ) AUTO_INCREMENT=1;
+
+CREATE UNIQUE INDEX patients_idx on patients(id);
+CREATE UNIQUE INDEX doctors_idx on doctors(doctor_id);
+CREATE UNIQUE INDEX appointments_idx on appointments(appointment_id);
 #Future Purpose
 CREATE TABLE IF NOT EXISTS authorised_users (
     username VARCHAR(20) PRIMARY KEY,
