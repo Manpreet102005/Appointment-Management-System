@@ -6,6 +6,7 @@ import entities.Patient;
 import repositories.*;
 import validations.PersonValidation;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 
@@ -106,6 +107,22 @@ public class Service {
 
         Appointment rescheduledAppointment=appointmentRepository.rescheduleAppointment(doctorId,appointmentId,newDateTime);
         return rescheduledAppointment;
+    }
+
+    public boolean removeDoctor(int doctorId) {
+        if(doctorId<=0){
+            throw new IllegalArgumentException("Id can't be smaller than 1");
+        }
+        boolean isRemoved=doctorRepository.removeDoctor(doctorId);
+        if(isRemoved) {
+            List<Appointment> allAppointments = appointmentRepository.getAllAppointments();
+            for (Appointment appointment : allAppointments) {
+                if (appointment.getDoctorId() == doctorId) {
+                    appointment.setStatus(Appointment.Status.CANCELLED);
+                }
+            }
+        }
+        return isRemoved;
     }
 }
 

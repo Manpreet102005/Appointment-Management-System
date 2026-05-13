@@ -67,6 +67,7 @@ public class Main {
             System.out.println("6. View All Appointments");
             System.out.println("7. View All Patients");
             System.out.println("8. View All Doctors");
+            System.out.println("9: Remove Doctor");
             System.out.println("0. Exit");
             System.out.print("Enter choice: ");
 
@@ -188,7 +189,14 @@ public class Main {
                         List<Doctor> allDoctors = doctorRepository.getAllDoctors();
                         allDoctors.forEach(System.out::println);
                         break;
+                    case 9:
+                        System.out.print("Enter Doctor ID: ");
+                        int id = sc.nextInt();
 
+                        if(service.removeDoctor(id)){
+                            System.out.println("Doctor Removed Successfully");
+                        }
+                        break;
                     case 0:
                         running = false;
                         System.out.println("Exiting system...");
