@@ -90,6 +90,7 @@ Once the application is running, you will be presented with a menu of options. E
 6. View All Appointments
 7. View All Patients
 8. View All Doctors
+9. Remove Doctor
 0. Exit
 Enter choice:
 ```
