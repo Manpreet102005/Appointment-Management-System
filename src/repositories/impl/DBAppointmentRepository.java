@@ -150,51 +150,6 @@ public class DBAppointmentRepository implements AppointmentRepository {
         return allAppointments;
     }
 
-    /*
-    @Override
-    public boolean hasAppointmentOnDay(int doctorId, int patientId, LocalDate date) {
-        String query="""
-        SELECT EXISTS (SELECT 1 FROM appointments 
-        WHERE doctor_id=? AND patient_id=? AND DATE(date_time)=DATE(?)
-        AND status='BOOKED')
-        """;
-        try(Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setInt(1, doctorId);
-            ps.setInt(2, patientId);
-            ps.setDate(3, Date.valueOf(date));
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
-                return rs.getBoolean(1);
-            }
-        } catch(SQLException e) {
-            System.err.println("State: " + e.getSQLState());
-            System.err.println("Code : " + e.getErrorCode());
-            System.err.println("Msg  : " + e.getMessage());
-        }
-        return false;
-    }
-
-    @Override
-    public Appointment getPatientAppointment(int doctorId, int patientId) {
-        String query="SELECT * FROM appointments WHERE doctor_id=? AND patient_id=?";
-        try(Connection conn= DatabaseConnection.getConnection();
-        PreparedStatement ps = conn.prepareStatement(query)){
-            ps.setInt(1,doctorId);
-            ps.setInt(2,patientId);
-            ResultSet rs=ps.executeQuery();
-            return new Appointment(doctorId,patientId,rs.getString("patient_name"),
-                    rs.getTimestamp("date_time").toLocalDateTime(),
-                    Appointment.Status.valueOf(rs.getString("status")));
-        }catch(SQLException e) {
-            System.err.println("State: " + e.getSQLState());
-            System.err.println("Code : " + e.getErrorCode());
-            System.err.println("Msg  : " + e.getMessage());
-        }
-        return null;
-    }
-
- */
     @Override
     public Appointment getAppointmentById(int doctorId, int appointmentId){
         String query= """
