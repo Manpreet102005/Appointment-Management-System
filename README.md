@@ -1,6 +1,5 @@
 [README.md](https://github.com/user-attachments/files/27696271/README.md)
 # Appointment Management System
-[![Ask DeepWiki](https://devin.ai/assets/askdeepwiki.png)](https://deepwiki.com/Manpreet102005/Appointment-Management-System)
 
 A command-line based Appointment Management System written in Java. This application allows users to manage doctors, patients, and their appointments. It offers the flexibility to use either an in-memory data store for quick testing or a persistent MySQL database for durable storage.
 
