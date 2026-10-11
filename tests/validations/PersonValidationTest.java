@@ -144,9 +144,10 @@ public class PersonValidationTest {
                             .getMessage());
         }
 
-        @Test
-        void acceptValidGender() {
-            assertDoesNotThrow(()->PersonValidation.validateGender('M'));
+        @ParameterizedTest
+        @ValueSource(chars={'M','F','O'})
+        void acceptValidGender(char gender) {
+            assertDoesNotThrow(()->PersonValidation.validateGender(gender));
         }
     }
 }
