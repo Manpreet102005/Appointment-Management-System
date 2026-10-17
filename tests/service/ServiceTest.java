@@ -1,5 +1,6 @@
 package service;
 
+import entities.Appointment;
 import entities.Doctor;
 import entities.Patient;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import repositories.impl.InMemoryAppointmentRepository;
 import repositories.impl.InMemoryDoctorRepository;
 import repositories.impl.InMemoryPatientRepository;
+
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -101,6 +104,33 @@ public class ServiceTest {
             assertThrows(IllegalArgumentException.class,
                     ()->service.addDoctor("D@ctor Dummy!","Physician"));
             assertTrue(doctorRepo.getAllDoctors().isEmpty());
+        }
+    }
+
+    @Nested
+    class AppointmentTests{
+
+        private LocalDateTime slot(int year, int month, int day, int hour, int minute) {
+            return LocalDateTime.of(year, month, day, hour, minute);
+        }
+
+        @Test
+        void addAppointmentValid(){
+            Doctor d=newDoctor();
+            Patient p=newPatient();
+            LocalDateTime slot=slot(LocalDateTime.now().getYear(),
+                    LocalDateTime.now().getMonthValue(),
+                    LocalDateTime.now().getDayOfMonth(),
+                    12,30);
+            Appointment a=service.addAppointment(d.getId(),slot,p.getId());
+
+            assertNotNull(a);
+            assertSame(a,appointmentRepo.getAppointmentById(d.getId(),a.getAppointmentId()));
+            assertTrue(a.getAppointmentId()>0);
+            assertEquals(p.getFullName(), a.getPatientName());
+            assertEquals(slot,a.getDateTime());
+            assertEquals(Appointment.Status.BOOKED,a.getStatus());
+            assertEquals(1,appointmentRepo.getAllAppointments().size());
         }
     }
 }
