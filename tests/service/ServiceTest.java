@@ -10,7 +10,6 @@ import repositories.impl.InMemoryAppointmentRepository;
 import repositories.impl.InMemoryDoctorRepository;
 import repositories.impl.InMemoryPatientRepository;
 
-import javax.print.Doc;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
@@ -211,6 +210,42 @@ public class ServiceTest {
                 assertEquals("Slot already booked", ex.getMessage());
                 assertEquals(1, appointmentRepo.getAllAppointments().size());
                 assertSame(a, appointmentRepo.getAllAppointments().get(0));
+            }
+        }
+
+        @Nested
+        class CancelAppointmentTests {
+            private Appointment newAppointment() {
+                Doctor d = newDoctor();
+                Patient p = newPatient();
+                return service.addAppointment(
+                        d.getId(),
+                        slot(LocalDate.now().plusDays(1), 12, 30),
+                        p.getId()
+                );
+            }
+
+            @Test
+            void cancelAppointmentValid() {
+                Appointment a = newAppointment();
+                Appointment.Status status = service.cancelAppointment(a.getDoctorId(), a.getAppointmentId());
+                assertEquals(Appointment.Status.CANCELLED, status);
+                assertTrue(appointmentRepo.getAllAppointments().isEmpty());
+            }
+
+            @Test
+            void cancelAppointmentDoctorDoesNotExist() {
+                NoSuchElementException ex = assertThrows(NoSuchElementException.class,
+                        () -> service.cancelAppointment(Integer.MAX_VALUE, 1));//dummy data
+                assertEquals("Doctor does not exist.", ex.getMessage());
+            }
+
+            @Test
+            void cancelAppointmentAppointmentNotFound() {
+                Appointment existingApp=newAppointment();
+                NoSuchElementException ex=assertThrows(NoSuchElementException.class,
+                        ()->service.cancelAppointment(existingApp.getDoctorId(),Integer.MAX_VALUE));
+                assertEquals("Appointment not found",ex.getMessage());
             }
         }
     }
