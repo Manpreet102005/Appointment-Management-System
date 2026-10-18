@@ -110,18 +110,17 @@ public class ServiceTest {
     @Nested
     class AppointmentTests{
 
-        private LocalDateTime slot(int year, int month, int day, int hour, int minute) {
-            return LocalDateTime.of(year, month, day, hour, minute);
+        private LocalDateTime slot(int day, int hour, int minute) {
+            return LocalDateTime.of(LocalDateTime.now().getYear(),
+                    LocalDateTime.now().getMonthValue(),
+                    day, hour, minute);
         }
 
         @Test
         void addAppointmentValid(){
             Doctor d=newDoctor();
             Patient p=newPatient();
-            LocalDateTime slot=slot(LocalDateTime.now().getYear(),
-                    LocalDateTime.now().getMonthValue(),
-                    LocalDateTime.now().getDayOfMonth(),
-                    12,30);
+            LocalDateTime slot=slot(LocalDateTime.now().getDayOfMonth()+1 ,12,30);
             Appointment a=service.addAppointment(d.getId(),slot,p.getId());
 
             assertNotNull(a);
@@ -132,5 +131,12 @@ public class ServiceTest {
             assertEquals(Appointment.Status.BOOKED,a.getStatus());
             assertEquals(1,appointmentRepo.getAllAppointments().size());
         }
+
+        /*@Test
+        void addAppointmentPatientNotRegistered(){
+            Patient p= new Patient(1,"Patient");
+            Doctor d=newDoctor();
+            Appointment a=service.addAppointment(d.getId(),slot())
+        }*/
     }
 }
