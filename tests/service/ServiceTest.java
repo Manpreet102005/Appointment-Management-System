@@ -10,7 +10,10 @@ import repositories.impl.InMemoryAppointmentRepository;
 import repositories.impl.InMemoryDoctorRepository;
 import repositories.impl.InMemoryPatientRepository;
 
+import javax.print.Doc;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -110,17 +113,15 @@ public class ServiceTest {
     @Nested
     class AppointmentTests{
 
-        private LocalDateTime slot(int day, int hour, int minute) {
-            return LocalDateTime.of(LocalDateTime.now().getYear(),
-                    LocalDateTime.now().getMonthValue(),
-                    day, hour, minute);
+        private LocalDateTime slot(LocalDate date, int hour, int minute) {
+            return date.atTime(hour,minute);
         }
 
         @Test
         void addAppointmentValid(){
             Doctor d=newDoctor();
             Patient p=newPatient();
-            LocalDateTime slot=slot(LocalDateTime.now().getDayOfMonth()+1 ,12,30);
+            LocalDateTime slot=slot(LocalDate.now().plusDays(1) ,12,30);
             Appointment a=service.addAppointment(d.getId(),slot,p.getId());
 
             assertNotNull(a);
@@ -132,11 +133,84 @@ public class ServiceTest {
             assertEquals(1,appointmentRepo.getAllAppointments().size());
         }
 
-        /*@Test
+        @Test
         void addAppointmentPatientNotRegistered(){
             Patient p= new Patient(1,"Patient");
             Doctor d=newDoctor();
-            Appointment a=service.addAppointment(d.getId(),slot())
-        }*/
+            NoSuchElementException ex=assertThrows(NoSuchElementException.class,
+                    ()->service.addAppointment(d.getId(),
+                            slot(LocalDate.now().plusDays(1),12,45),
+                            p.getId()));
+            assertEquals("Patient not registered.",ex.getMessage());
+            assertTrue(appointmentRepo.getAllAppointments().isEmpty());
+        }
+
+        @Test
+        void addAppointmentDoctorNotFound(){
+            Patient p=newPatient();
+            Doctor d= new Doctor("Doctor","Physician");
+
+            NoSuchElementException ex= assertThrows(NoSuchElementException.class,
+                    ()->service.addAppointment(
+                            d.getId(),
+                            slot(LocalDate.now().plusDays(1),1,30),
+                            p.getId())
+            );
+            assertEquals("Doctor Not Found",ex.getMessage());
+            assertTrue(appointmentRepo.getAllAppointments().isEmpty());
+        }
+
+        @Test
+        void addAppointmentInPast(){
+            Doctor d=newDoctor();
+            Patient p=newPatient();
+
+            IllegalArgumentException ex= assertThrows(IllegalArgumentException.class,
+                    ()->service.addAppointment(d.getId(),
+                            slot(LocalDate.now().minusDays(1),12,30),
+                            p.getId()));
+            assertEquals("Appointment can't be made in past",ex.getMessage());
+            assertTrue(appointmentRepo.getAllAppointments().isEmpty());
+        }
+
+        @Test
+        void addAppointmentOutsideWorkingHours(){
+            Doctor d=newDoctor();
+            Patient p=newPatient();
+            assertAll(
+                    ()-> assertEquals("Working Hours: 10:00 am to 8:30 pm",
+                                assertThrows(IllegalArgumentException.class,
+                                        ()->service.addAppointment(
+                                                d.getId(),
+                                                slot(LocalDate.now().plusDays(1),9,59),
+                                                p.getId()
+                                        )).getMessage())
+                    ,
+                    ()->assertEquals("Working Hours: 10:00 am to 8:30 pm",
+                                assertThrows(IllegalArgumentException.class,
+                                        ()->service.addAppointment(
+                                                d.getId(),
+                                                slot(LocalDate.now().plusDays(1),8,31),
+                                                p.getId()
+                                        )).getMessage())
+            );
+            assertTrue(appointmentRepo.getAllAppointments().isEmpty());
+        }
+
+        @Test
+        void addAppointmentSlotAlreadyBooked(){
+            Doctor d=newDoctor();
+            Patient p1=newPatient();
+            Patient p2=newPatient();
+            LocalDateTime slot=slot(LocalDate.now().plusDays(1),11,30);
+            Appointment a=service.addAppointment(d.getId(),slot,p1.getId());
+
+            IllegalStateException ex=assertThrows(IllegalStateException.class,
+                    ()->service.addAppointment(d.getId(),slot,p2.getId()));
+            assertEquals("Slot already booked",ex.getMessage());
+            assertEquals(1,appointmentRepo.getAllAppointments().size());
+            assertSame(a,appointmentRepo.getAllAppointments().get(0));
+        }
+
     }
 }
