@@ -6,6 +6,7 @@ import entities.Patient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import repositories.AppointmentRepository;
 import repositories.impl.InMemoryAppointmentRepository;
 import repositories.impl.InMemoryDoctorRepository;
 import repositories.impl.InMemoryPatientRepository;
@@ -115,6 +116,16 @@ public class ServiceTest {
         private LocalDateTime slot(LocalDate date, int hour, int minute) {
             return date.atTime(hour,minute);
         }
+
+        private Appointment newAppointment() {
+            Doctor d = newDoctor();
+            Patient p = newPatient();
+            return service.addAppointment(
+                    d.getId(),
+                    slot(LocalDate.now().plusDays(1), 12, 30),
+                    p.getId()
+            );
+        }
         @Nested
         class AddAppointmentTests {
             @Test
@@ -190,7 +201,7 @@ public class ServiceTest {
                                 assertThrows(IllegalArgumentException.class,
                                         () -> service.addAppointment(
                                                 d.getId(),
-                                                slot(LocalDate.now().plusDays(1), 8, 31),
+                                                slot(LocalDate.now().plusDays(1), 20, 31),
                                                 p.getId()
                                         )).getMessage())
                 );
@@ -215,16 +226,6 @@ public class ServiceTest {
 
         @Nested
         class CancelAppointmentTests {
-            private Appointment newAppointment() {
-                Doctor d = newDoctor();
-                Patient p = newPatient();
-                return service.addAppointment(
-                        d.getId(),
-                        slot(LocalDate.now().plusDays(1), 12, 30),
-                        p.getId()
-                );
-            }
-
             @Test
             void cancelAppointmentValid() {
                 Appointment a = newAppointment();
@@ -246,6 +247,76 @@ public class ServiceTest {
                 NoSuchElementException ex=assertThrows(NoSuchElementException.class,
                         ()->service.cancelAppointment(existingApp.getDoctorId(),Integer.MAX_VALUE));
                 assertEquals("Appointment not found",ex.getMessage());
+            }
+        }
+
+        @Nested
+        class RescheduleAppointmentTests{
+            @Test
+            void rescheduleAppointment(){
+                Appointment existingApp=newAppointment();
+                LocalDateTime newSlot=slot(LocalDate.now().plusDays(1),13,30);
+                service.reScheduleAppointment(existingApp.getDoctorId(),existingApp.getAppointmentId(),newSlot);
+                assertEquals(newSlot,existingApp.getDateTime());
+                assertSame(existingApp,appointmentRepo.getAppointmentById(existingApp.getDoctorId(),existingApp.getAppointmentId()));
+                assertEquals(1,appointmentRepo.getAllAppointments().size());
+            }
+
+            @Test
+            void rescheduleAppointmentDoctorDoesNotExist() {
+                NoSuchElementException ex = assertThrows(NoSuchElementException.class,
+                        () -> service.reScheduleAppointment(Integer.MAX_VALUE,Integer.MAX_VALUE,slot(LocalDate.now(),13,45)));//dummy data
+                assertEquals("Doctor Not Found", ex.getMessage());
+            }
+
+            @Test
+            void rescheduleAppointmentAppointmentNotFound() {
+                Doctor d=newDoctor();
+                NoSuchElementException ex=assertThrows(NoSuchElementException.class,
+                        ()->service.reScheduleAppointment(d.getId(),Integer.MAX_VALUE,slot(LocalDate.now(),13,45)));
+                assertEquals("No scheduled appointment",ex.getMessage());
+            }
+
+            @Test
+            void rescheduleAppointmentInPast() {
+                Appointment a=newAppointment();
+
+                IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                        () -> service.reScheduleAppointment(a.getDoctorId(),a.getAppointmentId(),a.getDateTime().minusDays(1)));
+                assertEquals("Appointment can't be rescheduled to past", ex.getMessage());
+            }
+
+            @Test
+            void rescheduleAppointmentOutsideWorkingHours() {
+                Appointment a=newAppointment();
+                assertAll(
+                        () -> assertEquals("Working Hours: 10:00 am to 8:30 pm",
+                                assertThrows(IllegalArgumentException.class,
+                                        () -> service.reScheduleAppointment(
+                                                a.getDoctorId(),
+                                                a.getAppointmentId(),
+                                                slot(LocalDate.now().plusDays(1), 9, 59)
+                                        )).getMessage())
+                        ,
+                        () -> assertEquals("Working Hours: 10:00 am to 8:30 pm",
+                                assertThrows(IllegalArgumentException.class,
+                                        () -> service.reScheduleAppointment(
+                                                a.getDoctorId(),
+                                                a.getAppointmentId(),
+                                                slot(LocalDate.now().plusDays(1),20,31)
+                                        )).getMessage())
+                );
+                assertEquals(1,appointmentRepo.getAllAppointments().size());
+            }
+
+            @Test
+            void rescheduleAppointmentSlotAlreadyBooked() {
+                Appointment existingApp=newAppointment();
+
+                IllegalStateException ex = assertThrows(IllegalStateException.class,
+                        () -> service.reScheduleAppointment(existingApp.getDoctorId(),existingApp.getAppointmentId(),existingApp.getDateTime()));
+                assertEquals("Slot already booked", ex.getMessage());
+                assertSame(existingApp, appointmentRepo.getAllAppointments().get(0));
             }
         }
     }
