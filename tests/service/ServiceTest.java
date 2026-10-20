@@ -32,6 +32,10 @@ public class ServiceTest {
     }
     //Helpers
 
+    private LocalDateTime slot(LocalDate date, int hour, int minute) {
+        return date.atTime(hour,minute);
+    }
+
     private Doctor newDoctor(){
         return service.addDoctor("Dummy Doctor","Dummy Specialization");
     }
@@ -40,6 +44,15 @@ public class ServiceTest {
         return service.addPatient("Dummy Patient", "1234567890",'M',"O+");
     }
 
+    private Appointment newAppointment() {
+        Doctor d = newDoctor();
+        Patient p = newPatient();
+        return service.addAppointment(
+                d.getId(),
+                slot(LocalDate.now().plusDays(1), 12, 30),
+                p.getId()
+        );
+    }
     //Tests
 
     @Nested
@@ -47,7 +60,6 @@ public class ServiceTest {
         @Test
         void addPatientValid(){
             Patient p=newPatient();
-            assertNotNull(p);
             assertEquals("Dummy Patient",p.getFullName());
             assertSame(p,patientRepo.getPatient(p.getId()));
             assertEquals(1,patientRepo.getAllPatients().size());
@@ -93,39 +105,41 @@ public class ServiceTest {
 
     @Nested
     class DoctorTests{
-        @Test
-        void addDoctorValid(){
-            Doctor d= newDoctor();
-            assertNotNull(d);
-            assertEquals("Dummy Doctor",d.getFullName());
-            assertSame(d,doctorRepo.getDoctor(d.getId()));
-            assertEquals(1,doctorRepo.getAllDoctors().size());
+        @Nested
+        class AddDoctorTests{
+            @Test
+            void addDoctorValid(){
+                Doctor d= newDoctor();
+                assertEquals("Dummy Doctor",d.getFullName());
+                assertSame(d,doctorRepo.getDoctor(d.getId()));
+                assertEquals(1,doctorRepo.getAllDoctors().size());
+            }
+
+            @Test
+            void addDoctorInvalid(){
+                assertThrows(IllegalArgumentException.class,
+                        ()->service.addDoctor("D@ctor Dummy!","Physician"));
+                assertTrue(doctorRepo.getAllDoctors().isEmpty());
+            }
         }
 
-        @Test
-        void addDoctorInvalid(){
-            assertThrows(IllegalArgumentException.class,
-                    ()->service.addDoctor("D@ctor Dummy!","Physician"));
-            assertTrue(doctorRepo.getAllDoctors().isEmpty());
+        @Nested
+        class RemoveDoctorTests{
+            @Test
+            void removeDoctorValid(){
+                Appointment a=newAppointment();
+                assertTrue(service.removeDoctor(a.getDoctorId()));
+                assertTrue(doctorRepo.getAllDoctors().isEmpty());
+                assertSame(Appointment.Status.CANCELLED,
+                        appointmentRepo.getAllAppointments().get(0).getStatus());
+            }
         }
+
     }
 
     @Nested
     class AppointmentTests{
 
-        private LocalDateTime slot(LocalDate date, int hour, int minute) {
-            return date.atTime(hour,minute);
-        }
-
-        private Appointment newAppointment() {
-            Doctor d = newDoctor();
-            Patient p = newPatient();
-            return service.addAppointment(
-                    d.getId(),
-                    slot(LocalDate.now().plusDays(1), 12, 30),
-                    p.getId()
-            );
-        }
         @Nested
         class AddAppointmentTests {
             @Test
@@ -319,5 +333,6 @@ public class ServiceTest {
                 assertSame(existingApp, appointmentRepo.getAllAppointments().get(0));
             }
         }
+
     }
 }
