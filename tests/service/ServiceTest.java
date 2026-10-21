@@ -6,7 +6,8 @@ import entities.Patient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import repositories.AppointmentRepository;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import repositories.impl.InMemoryAppointmentRepository;
 import repositories.impl.InMemoryDoctorRepository;
 import repositories.impl.InMemoryPatientRepository;
@@ -158,6 +159,28 @@ public class ServiceTest {
                     assertEquals(Appointment.Status.CANCELLED, a.getStatus());
                 }
 
+            }
+
+            @ParameterizedTest
+            @ValueSource(ints = {0,-1,-225,Integer.MIN_VALUE})
+            void removeDoctorInvalidId(int invalidId){
+                newDoctor();
+                assertEquals("Id can't be smaller than 1",
+                        assertThrows(IllegalArgumentException.class,
+                                ()-> service.removeDoctor(invalidId)
+                        ).getMessage()
+                );
+                assertEquals(1,doctorRepo.getAllDoctors().size());
+            }
+
+            @Test
+            void removeDoctorDoctorNotFound(){
+                assertEquals("Doctor Not Found",
+                        assertThrows(NoSuchElementException.class,
+                                ()->service.removeDoctor(1)
+                        ).getMessage()
+                );
+                assertTrue(doctorRepo.getAllDoctors().isEmpty());
             }
         }
 
