@@ -13,6 +13,8 @@ import repositories.impl.InMemoryPatientRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -124,14 +126,38 @@ public class ServiceTest {
         }
 
         @Nested
-        class RemoveDoctorTests{
+        class RemoveDoctorTests {
             @Test
-            void removeDoctorValid(){
-                Appointment a=newAppointment();
-                assertTrue(service.removeDoctor(a.getDoctorId()));
+            void removeDoctorValid() {
+                Doctor d = newDoctor();
+                Patient p1 = newPatient();
+                Patient p2 = newPatient();
+                Appointment a1 = new Appointment(d.getId(),
+                        p1.getId(),
+                        p1.getFullName(),
+                        slot(LocalDate.now().plusDays(1), 14, 30)
+                );
+                Appointment a2 = new Appointment(d.getId(),
+                        p2.getId(),
+                        p2.getFullName(),
+                        slot(LocalDate.now().plusDays(1), 15, 23)
+                );
+                appointmentRepo.addAppointment(a1);
+                appointmentRepo.addAppointment(a2);
+                List<Appointment> doctorAppointments = new ArrayList<>();
+                for (Appointment a : appointmentRepo.getAllAppointments()) {
+                    if (a.getDoctorId() == d.getId()) {
+                        doctorAppointments.add(a);
+                    }
+                }
+                assertEquals(2, doctorAppointments.size());
+                assertTrue(service.removeDoctor(d.getId()));
                 assertTrue(doctorRepo.getAllDoctors().isEmpty());
-                assertSame(Appointment.Status.CANCELLED,
-                        appointmentRepo.getAllAppointments().get(0).getStatus());
+
+                for (Appointment a : doctorAppointments) {
+                    assertEquals(Appointment.Status.CANCELLED, a.getStatus());
+                }
+
             }
         }
 
@@ -333,6 +359,5 @@ public class ServiceTest {
                 assertSame(existingApp, appointmentRepo.getAllAppointments().get(0));
             }
         }
-
     }
 }
