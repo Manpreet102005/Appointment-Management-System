@@ -121,8 +121,9 @@ public class Service {
                     appointment.setStatus(Appointment.Status.CANCELLED);
                 }
             }
+            return isRemoved;
         }
-        return isRemoved;
+        else throw new NoSuchElementException("Doctor Not Found");
     }
 }
 
